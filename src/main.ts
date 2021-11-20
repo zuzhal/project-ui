@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import App  from './App.vue'
+// import router from './router'
 import './index.css'
 import 'vue-progress-path/dist/vue-progress-path.css'
-import VueProgress from 'vue-progress-path'
+// import VueProgress from 'vue-progress-path'
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
-import store from './store/index.js'
+import store from './store/index'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -26,10 +26,10 @@ const app = createApp(App)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 
-app.use(router)
-app.use(VueProgress, {
+// app.use(router)
+/* app.use(VueProgress, {
     // defaultShape: 'circle',
-})
+}) */
 app.use(ElementPlus)
 app.use(store)
 

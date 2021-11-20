@@ -5,16 +5,18 @@
   </div>
 </template>
 
-<script>
-import Home from "./components/views/Home.vue";
-import TheHeader from "./components/ui/TheHeader.vue";
+<script lang="ts">
+import { defineComponent } from 'vue';
+import TheHeader from './components/ui/TheHeader.vue';
+import Home from './components/views/Home.vue';
 
-export default {
+export default defineComponent({
+  name: 'App',
   components: {
     TheHeader,
-    Home,
-  },
-};
+    Home
+  }
+});
 </script>
 
 <style>
