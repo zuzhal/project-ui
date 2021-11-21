@@ -2,8 +2,8 @@
 
 export interface ExperimentInfoDialog {
   language: { language: string[] }; // json in strapi
-  subject: string; // json in strapi
-  setup: { setup: string[] };
+  subject: string; 
+  setup: { setup: string[] }; // json in strapi
 }
 
 export interface ExpEnvSettings {

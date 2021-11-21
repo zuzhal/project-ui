@@ -1,21 +1,21 @@
 /**
  * Flatten a multidimensional object
- *
- * For example:
- *   flattenObject({ a: 1, b: { c: 2 } })
- * Returns:
- *   { a: 1, c: 2}
+ * where there is object with the same property
+ * ex: { language: language: [...] } => { language: [...] }
  */
  export const flattenObject = (obj) => {
-    const flattened = {}
-  
-    Object.keys(obj).forEach((key) => {
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
-        Object.assign(flattened, flattenObject(obj[key]))
+    let flattened = {}
+
+    for (const key in obj) {
+      if(typeof obj[key] == 'object') {
+        flattened = {
+          ...flattened,
+          ...obj[key],
+        };
       } else {
-        flattened[key] = obj[key]
+        flattened[key] = obj[key];
       }
-    })
+    } 
   
     return flattened
   }

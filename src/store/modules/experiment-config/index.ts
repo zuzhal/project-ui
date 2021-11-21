@@ -1,6 +1,4 @@
-// import mutations from './mutations.js';
-// import getters from './getters.js';
-// import actions from './actions.js';
+import { flattenObject } from "../../../helpers";
 
 const API_URL = 'http://localhost:1337/';
 
@@ -23,7 +21,7 @@ export default {
             state.expEnvSettings = payload;
         },
         setSettingsDialog(state, payload) {
-            state.settingsDialog = payload[0].settingsDialog;
+            state.settingsDialog = flattenObject(payload[0].settingsDialog[0]);
         },
         setExperimentName(state, payload = 'flanker_fmri') {
             state.experimentName = payload;
@@ -65,7 +63,7 @@ export default {
             return state.experimentSettings.expEnvSettings;
         },
         settingsDialog(state) {
-            return state.settingsDialog[0];
+            return state.settingsDialog;
         },
         experimentName(state) {
             return state.experimentName;

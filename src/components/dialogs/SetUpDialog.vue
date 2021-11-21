@@ -2,58 +2,84 @@
   <el-button type="text" @click="dialogVisible = true">
     click to open the Dialog
   </el-button>
-  <el-dialog v-model="dialogVisible" title="Experiment info" width="30%">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name"></el-input>
-      </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai"></el-option>
-          <el-option label="Zone two" value="beijing"></el-option>
-        </el-select>
-      </el-form-item>
+  <el-dialog v-model="dialogVisible" title="Experiment info" width="35%">
+    <el-form ref="form" :model="form" label-width="80px" center>
+      <div v-for="(value, k) in dialogInputs" :key="k">
+        <el-form-item v-if="generateElement(k)" :label="k">
+          <el-input v-model="form[k]"></el-input>
+        </el-form-item>
+        <el-form-item v-else-if="k !== 'id'" :label="k">
+          <el-select
+            v-model="form[k]"
+            :placeholder="'select your ' + k"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="(value, l, index) in dialogInputs[k]"
+              :key="index"
+              :label="dialogInputs[k][l]"
+              :value="dialogInputs[k][l]"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >Confirm</el-button
-        >
+        <el-button type="primary" @click="dialogVisible = false">
+          Confirm
+        </el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+import { ExperimentInfoDialog } from "../../data-models/models";
+
+export default defineComponent({
   data() {
     return {
       isLoading: false,
       dialogVisible: false,
-      dialogInputs: {},
-      form: {
-        name: "",
-        region: "",
-      },
+      dialogInputs: {} as ExperimentInfoDialog,
+      form: {},
     };
   },
   created() {
     this.loadConfig();
   },
   methods: {
-    async loadConfig() {
-      try {
-        await this.$store.dispatch("experimentConfig/loadSettingsDialog");
-        this.dialogInputs =
-          this.$store.getters["experimentConfig/settingsDialog"];
-        console.log(this.dialogInputs);
-      } catch (e) {
-        console.error(e);
+    loadConfig() {
+      this.$store
+        .dispatch("experimentConfig/loadSettingsDialog")
+        .then(() => {
+          this.dialogInputs =
+            this.$store.getters["experimentConfig/settingsDialog"];
+          this.initializeForm();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    initializeForm() {
+      for (const key in this.dialogInputs) {
+        if (key == "id") continue;
+        this.form[key] = "";
       }
     },
+    generateElement(key) {
+      if (key !== "id" && typeof this.dialogInputs[key] === "string")
+        return true;
+    },
   },
-};
+});
 </script>
 
-<style></style>
+<style>
+.el-form-item__label::first-letter {
+  text-transform: uppercase !important;
+}
+</style>
