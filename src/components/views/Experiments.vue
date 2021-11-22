@@ -1,58 +1,42 @@
 <template>
-  <el-table :data="tableData" height="250" style="width: 100%">
-    <el-table-column prop="name" label="Name" width="180" />
-    <el-table-column prop="date" label="Date" width="180" />
+  <el-table :data="experiments" height="250" style="width: 100%">
+    <el-table-column prop="experimentName" label="Experiment Name" />
+    <!--<el-table-column prop="date" label="Date" width="180" />
     <el-table-column prop="address" label="Id" />
     <el-table-column prop="address" label="Status" />
     <el-table-column prop="address" label="Visibility" />
-    <el-table-column prop="address" label="Saving Format" />
+    <el-table-column prop="address" label="Saving Format" /> -->
   </el-table>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { Experiments } from "@/data-models/models";
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  created() {
+    this.loadExperiments();
+  },
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-02",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-04",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-01",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-08",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-06",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-        {
-          date: "2016-05-07",
-          name: "Tom",
-          address: "No. 189, Grove St, Los Angeles",
-        },
-      ],
+      experiments: [] as Experiments[],
     };
   },
-};
+  methods: {
+    loadExperiments() {
+      this.$store
+        .dispatch("experiments/loadExperiments")
+        .then(() => {
+          this.experiments =
+            this.$store.getters["experiments/experiments"];
+            console.log(this.experiments)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
+});
 </script>
 
 <style></style>

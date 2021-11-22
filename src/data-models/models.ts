@@ -32,3 +32,8 @@ export interface ExperimentSettings {
   expEnvSettings: ExpEnvSettings;
   experimentName: string;
 }
+
+export interface Experiments {
+  experimentName: string;
+  usersPermissionsUser: any
+}

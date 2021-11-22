@@ -60,7 +60,7 @@ export default defineComponent({
             this.$store.getters["experimentConfig/settingsDialog"];
           this.initializeForm();
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log(error);
         });
     },

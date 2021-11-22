@@ -1,3 +1,4 @@
+import { ExpEnvSettings, ExperimentInfoDialog, ExperimentSettings } from "../../../data-models/models";
 import { flattenObject } from "../../../helpers";
 
 const API_URL = 'http://localhost:1337/';
@@ -6,11 +7,11 @@ export default {
     namespaced: true,
     state() {
         return {
-            settingsDialog: {},
+            settingsDialog: {} as ExperimentInfoDialog,
             experimentName: 'flanker_fmri',
             experimentSettings: {
-                expEnvSettings: {},
-            }
+                expEnvSettings: {} as ExpEnvSettings,
+            } as ExperimentSettings
         }
     },
     mutations: {

@@ -2,8 +2,8 @@
   <user-card></user-card>
   <base-card>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="Experiments" name="first"
-        ><experiments></experiments>
+      <el-tab-pane label="Experiments" name="first">
+        <experiments></experiments>
       </el-tab-pane>
       <el-tab-pane label="Config" name="second">Participants</el-tab-pane>
     </el-tabs>
