@@ -1,21 +1,23 @@
 <template>
   <the-header></the-header>
   <div class="container">
-    <home></home>
+    <router-view v-slot="slotProps">
+      <component :is="slotProps.Component"></component>
+    </router-view>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import TheHeader from './components/ui/TheHeader.vue';
-import Home from './components/views/Home.vue';
+import { defineComponent } from "vue";
+import TheHeader from "./components/ui/TheHeader.vue";
+import Home from "./components/views/Home.vue";
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   components: {
     TheHeader,
-    Home
-  }
+    Home,
+  },
 });
 </script>
 

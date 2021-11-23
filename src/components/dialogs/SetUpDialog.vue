@@ -1,7 +1,4 @@
 <template>
-  <el-button type="text" @click="dialogVisible = true">
-    click to open the Dialog
-  </el-button>
   <el-dialog v-model="dialogVisible" title="Experiment info" width="35%">
     <el-form ref="form" :model="form" label-width="80px" center>
       <div v-for="(value, k) in dialogInputs" :key="k">
@@ -26,8 +23,8 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false">
+        <el-button @click="dialogVisible(false)">Cancel</el-button>
+        <el-button type="primary" @click="dialogVisible(false)">
           Confirm
         </el-button>
       </span>
@@ -40,16 +37,23 @@ import { defineComponent } from "vue";
 import { ExperimentInfoDialog } from "../../data-models/models";
 
 export default defineComponent({
+  props: {
+    isDialogVisible: { type: Boolean, default: false },
+  },
   data() {
     return {
       isLoading: false,
-      dialogVisible: false,
       dialogInputs: {} as ExperimentInfoDialog,
       form: {},
     };
   },
   created() {
     this.loadConfig();
+  },
+  computed: {
+    dialogVisible(isVisible: null) {
+      return isVisible ? isVisible : this.isDialogVisible; // mutating props is an anti-pattern, therefore computed is used
+    },
   },
   methods: {
     loadConfig() {

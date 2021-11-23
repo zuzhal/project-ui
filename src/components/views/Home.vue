@@ -8,21 +8,17 @@
       <el-tab-pane label="Config" name="second">Participants</el-tab-pane>
     </el-tabs>
   </base-card>
-  <set-up-dialog></set-up-dialog>
 </template>
 
-<script>
+<script lang="ts">
 import UserCard from "../ui/UserCard.vue";
-import BaseCard from "../ui/BaseCard.vue";
 import Experiments from "./Experiments.vue";
-import SetUpDialog from "../dialogs/SetUpDialog.vue";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   components: {
     UserCard,
-    BaseCard,
     Experiments,
-    SetUpDialog,
   },
   data() {
     return {
@@ -34,7 +30,7 @@ export default {
       console.log(tab, event);
     },
   },
-};
+});
 </script>
 
 <style></style>
