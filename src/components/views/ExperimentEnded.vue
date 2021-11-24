@@ -1,9 +1,9 @@
 <template>
   <section>
     <base-card>
-      <h2>Page not found</h2>
+      <h2>Experiment has ended</h2>
       <p>
-        This experiment is either inactive or unavailable to you.
+        This experiment was either canceled or done.
       </p>
     </base-card>
   </section>

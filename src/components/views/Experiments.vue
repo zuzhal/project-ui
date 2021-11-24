@@ -1,9 +1,9 @@
 <template>
-  <set-up-dialog :isDialogVisible="isDialog" @close-dialog="setDialogVisibility"></set-up-dialog>
+  <!-- <set-up-dialog :isDialogVisible="isDialog" @close-dialog="setDialogVisibility"></set-up-dialog> -->
   <el-table :data="experiments" height="250" style="width: 100%">
     <el-table-column label="Experiment Name">
       <template #default="scope">
-        <base-button @click="isDialog = true"> 
+        <base-button :to="'/experiment/' + scope.row.id + '/' + scope.row.experimentLink"> 
           {{ scope.row.experimentName }}
         </base-button>
       </template>
@@ -20,12 +20,10 @@
 import { Experiments } from "../../data-models/models";
 import { defineComponent } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
-import SetUpDialog from "../dialogs/SetUpDialog.vue";
 
 export default defineComponent({
   components: {
     BaseButton,
-    SetUpDialog
 },
   created() {
     this.loadExperiments();
@@ -48,9 +46,9 @@ export default defineComponent({
           console.log(error);
         });
     },
-    setDialogVisibility() {
+    /* setDialogVisibility() {
       this.isDialog = false;
-    }
+    } */
   },
 });
 </script>

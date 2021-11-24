@@ -35,6 +35,9 @@ export interface ExperimentSettings {
 }
 
 export interface Experiments {
+  id: number;
+  experimentLink: string;
   experimentName: string;
-  usersPermissionsUser: any
+  active: boolean;
+  usersPermissionsUser: any // TODO interface
 }

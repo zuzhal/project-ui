@@ -5,6 +5,7 @@
       title="Experiment info"
       width="35%"
       :show-close="false"
+      :close-on-click-modal="false"
     >
       <el-form ref="form" :model="form" label-width="80px" center>
         <div v-for="(value, k) in dialogInputs" :key="k">
@@ -30,7 +31,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="$emit('closeDialog')">Cancel</el-button>
-          <el-button type="primary" @click="$emit('closeDialog')">
+          <el-button type="primary" @click="$emit('startExperiment')">
             Confirm
           </el-button>
         </span>
@@ -50,7 +51,7 @@ export default defineComponent({
   data() {
     return {
       isLoading: false,
-      isDialogOpened: false,
+      isDialogOpened: true,
       dialogInputs: {} as ExperimentInfoDialog,
       form: {},
     };
@@ -63,7 +64,7 @@ export default defineComponent({
       this.isDialogOpened = val;
     }
   },
-  emits: ["closeDialog"],
+  emits: ["closeDialog", "startExperiment"],
   methods: {
     loadDialogConfig() {
       this.$store
