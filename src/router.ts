@@ -6,8 +6,8 @@ import NotFound from "./components/views/NotFound.vue";
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: "/", redirect: "/home" },
-    { path: "/home", component: Home },
+    { path: "/", redirect: "/admin-home" },
+    { path: "/admin-home", component: Home },
     { path: "/flanker-fmri", component: FlankerTask },
     { path: "/:notFound(.*)", component: NotFound },
   ],

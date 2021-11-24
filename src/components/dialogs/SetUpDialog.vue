@@ -1,35 +1,42 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="Experiment info" width="35%">
-    <el-form ref="form" :model="form" label-width="80px" center>
-      <div v-for="(value, k) in dialogInputs" :key="k">
-        <el-form-item v-if="generateElement(k)" :label="k">
-          <el-input v-model="form[k]"></el-input>
-        </el-form-item>
-        <el-form-item v-else-if="k !== 'id'" :label="k">
-          <el-select
-            v-model="form[k]"
-            :placeholder="'select your ' + k"
-            style="width: 100%"
-          >
-            <el-option
-              v-for="(value, l, index) in dialogInputs[k]"
-              :key="index"
-              :label="dialogInputs[k][l]"
-              :value="dialogInputs[k][l]"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </div>
-    </el-form>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible(false)">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible(false)">
-          Confirm
-        </el-button>
-      </span>
-    </template>
-  </el-dialog>
+  <teleport to="body">
+    <el-dialog
+      v-model="isDialogOpened"
+      title="Experiment info"
+      width="35%"
+      :show-close="false"
+    >
+      <el-form ref="form" :model="form" label-width="80px" center>
+        <div v-for="(value, k) in dialogInputs" :key="k">
+          <el-form-item v-if="generateElement(k)" :label="k">
+            <el-input v-model="form[k]"></el-input>
+          </el-form-item>
+          <el-form-item v-else-if="k !== 'id'" :label="k">
+            <el-select
+              v-model="form[k]"
+              :placeholder="'select your ' + k"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="(value, l, index) in dialogInputs[k]"
+                :key="index"
+                :label="dialogInputs[k][l]"
+                :value="dialogInputs[k][l]"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="$emit('closeDialog')">Cancel</el-button>
+          <el-button type="primary" @click="$emit('closeDialog')">
+            Confirm
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </teleport>
 </template>
 
 <script lang="ts">
@@ -43,25 +50,28 @@ export default defineComponent({
   data() {
     return {
       isLoading: false,
+      isDialogOpened: false,
       dialogInputs: {} as ExperimentInfoDialog,
       form: {},
     };
   },
   created() {
-    this.loadConfig();
+    this.loadDialogConfig();
   },
-  computed: {
-    dialogVisible(isVisible: null) {
-      return isVisible ? isVisible : this.isDialogVisible; // mutating props is an anti-pattern, therefore computed is used
-    },
+  watch: {
+    isDialogVisible(val) {
+      this.isDialogOpened = val;
+    }
   },
+  emits: ["closeDialog"],
   methods: {
-    loadConfig() {
+    loadDialogConfig() {
       this.$store
         .dispatch("experimentConfig/loadSettingsDialog")
         .then(() => {
           this.dialogInputs =
             this.$store.getters["experimentConfig/settingsDialog"];
+
           this.initializeForm();
         })
         .catch((error) => {
@@ -77,6 +87,9 @@ export default defineComponent({
     generateElement(key) {
       if (key !== "id" && typeof this.dialogInputs[key] === "string")
         return true;
+    },
+    handleClose() {
+      console.log("close");
     },
   },
 });

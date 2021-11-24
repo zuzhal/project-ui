@@ -1,8 +1,9 @@
 // ------ Experiment interfaces
 
 export interface ExperimentInfoDialog {
+  id: any;
   language: { language: string[] }; // json in strapi
-  subject: string; 
+  subject: any; 
   setup: { setup: string[] }; // json in strapi
 }
 

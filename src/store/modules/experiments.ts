@@ -23,7 +23,7 @@ export default {
       );
 
       const responseData = await response.json();
-      console.log(responseData);
+      // console.log(responseData);
       if (!response.ok) {
         // handle errors
       }
