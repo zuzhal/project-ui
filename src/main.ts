@@ -17,15 +17,15 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 
 import store from "./store/index";
+import VueFullscreen from "vue-fullscreen";
 
-import axios from "axios";
-import VueAxios from "vue-axios";
 
 library.add(faSignOutAlt, faUser, faAt);
 
 const app = createApp(App);
 
 app.use(ElementPlus);
+app.use(VueFullscreen)
 app.use(router);
 app.use(store);
 
@@ -34,7 +34,5 @@ app.component("base-card", BaseCard);
 
 // -- Experiments
 app.component("flanker-fmri", FlankerFmri);
-
-app.use(VueAxios, axios);
 
 app.mount("#app");

@@ -30,7 +30,7 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="$emit('closeDialog')">Cancel</el-button>
+          <el-button @click="$router.push({path: '/end'})">Cancel</el-button>
           <el-button type="primary" @click="$emit('startExperiment')">
             Confirm
           </el-button>
@@ -64,7 +64,7 @@ export default defineComponent({
       this.isDialogOpened = val;
     }
   },
-  emits: ["closeDialog", "startExperiment"],
+  emits: ["startExperiment"],
   methods: {
     loadDialogConfig() {
       this.$store

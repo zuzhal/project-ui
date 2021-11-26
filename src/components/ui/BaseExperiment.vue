@@ -1,10 +1,11 @@
 <template>
   <set-up-dialog
     :is-dialog-visible="isDialogVisible"
-    @close-dialog="isDialogVisible = false"
     @start-experiment="startExperiment"
   ></set-up-dialog>
   <component v-if="isExperimentOn" :is="experimentLink"></component>
+  <!-- <fullscreen v-model="isExperimentOn">
+  </fullscreen> -->
   <!-- <button class="mt-2 btn btn-primary" @click="isExperimentOn = !isExperimentOn">Turn on the experiment</button> -->
 </template>
 
@@ -18,6 +19,7 @@ export default defineComponent({
   },
   created() {
     this.setExperimentLink();
+    this.loadExperimentConfig();
   },
   data() {
     return {
@@ -28,11 +30,20 @@ export default defineComponent({
   },
   methods: {
     setExperimentLink() {
-      this.experimentLink = this.$route.params.link;
+      this.experimentLink =
+        this.$store.getters["experimentConfig/experimentName"];
     },
     startExperiment() {
       this.isDialogVisible = false;
       this.isExperimentOn = true;
+    },
+    loadExperimentConfig() {
+      this.$store
+        .dispatch("experimentConfig/loadExpSettings")
+        .then(() => {})
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 });

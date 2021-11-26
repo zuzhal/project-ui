@@ -29,6 +29,14 @@ export interface ExpEnvSettings {
   ITISet: any; // json in strapi
 }
 
+export interface Instructions {
+  instructions: string;
+  instructionsColor: string;
+  background: string;
+  title: string;
+  titleColor: string;
+}
+
 export interface ExperimentSettings {
   expEnvSettings: ExpEnvSettings;
   experimentName: string;

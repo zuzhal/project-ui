@@ -3,6 +3,8 @@ import Home from "./components/views/Home.vue";
 import NotFound from "./components/views/NotFound.vue";
 import ExperimentEnded from "./components/views/ExperimentEnded.vue";
 import BaseExperiment from "./components/ui/BaseExperiment.vue";
+import store from "./store/index";
+
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -12,6 +14,10 @@ const router = createRouter({
     {
       path: "/experiment/:id/:link",
       component: BaseExperiment,
+      beforeEnter: (to, from, next) => {
+        store.commit('experimentConfig/setExperimentName', to.params.link);
+        next();
+      }
     },
     { path: "/:notFound(.*)", component: NotFound },
     { path: "/end", component: ExperimentEnded },
