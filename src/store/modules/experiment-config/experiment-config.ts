@@ -1,8 +1,9 @@
 import { PropType } from "vue";
 import {
-  ExpEnvSettings,
   ExperimentSettings,
+  FixationSettings,
   Instructions,
+  StimulusSettings,
 } from "../../../data-models/models";
 import { flattenObject } from "../../../helpers";
 
@@ -14,9 +15,12 @@ export default {
     return {
       // settingsDialog: {} as ExperimentInfoDialog,
       experimentName: "",
-      instructionsSettings: Object as PropType<Instructions>,
-      experimentSettings: Object as PropType<ExperimentSettings>
-        // expEnvSettings: Object as PropType<ExpEnvSettings>,
+      instructionsSettings: {} as Instructions,
+      experimentSettings: {} as ExperimentSettings,
+      fixationSettings: {} as FixationSettings,
+      stimuliSettings: {} as StimulusSettings,
+      stimuliSet: Array<[String, String, String, String]>(),
+      // expEnvSettings: Object as PropType<ExpEnvSettings>,
     };
   },
   mutations: {
@@ -39,9 +43,26 @@ export default {
         titleColor: payload[0].expEnvSettings.titleColor,
         instructions: payload[0].expEnvSettings.instructions,
         instructionsColor: payload[0].expEnvSettings.instructionsColor,
-        background: payload[0].expEnvSettings.background,
+        // background: payload[0].expEnvSettings.background,
       };
     },
+    setFixationSettings(state, payload) {
+      state.fixationSettings = {
+        fixationColorRest: payload[0].expEnvSettings.fixationColorRest,
+        fixationColorTask: payload[0].expEnvSettings.fixationColorTask,
+        fixationRadius: payload[0].expEnvSettings.fixationRadius,
+      };
+    },
+    setStimuliSettings(state, payload) {
+      state.stimulusSettings = {
+        // stimuliSet: payload[0].expEnvSettings.stimuliSet,
+        stimulusColor: payload[0].expEnvSettings.stimulusColor,
+        stimulusHeight: payload[0].expEnvSettings.stimulusHeight,
+      };
+    },
+    setStimuliSet(state, payload) {
+      state.stimuliSet = payload[0].expEnvSettings.stimuliSet.set;
+    }
   },
   actions: {
     async loadExpSettings({ commit, getters }) {
@@ -49,7 +70,7 @@ export default {
         API_URL + "experiment-settings?experimentName=" + getters.experimentName
       );
 
-      const responseData = await response.json().then();
+      const responseData = await response.json(); // then() ??
       // console.log(responseData);
       if (!response.ok) {
         // handle errors
@@ -57,6 +78,9 @@ export default {
 
       commit("setExperimentSettings", responseData);
       commit("setInstructionsSettings", responseData);
+      commit("setFixationSettings", responseData);
+      commit("setStimuliSettings", responseData);
+      commit("setStimuliSet", responseData);
     },
 
     async loadSettingsDialog({ commit, getters }) {
@@ -90,6 +114,15 @@ export default {
     },
     instructionsSettings(state) {
       return state.instructionsSettings;
+    },
+    fixationSettings(state) {
+      return state.fixationSettings;
+    },
+    stimulusSettings(state) {
+      return state.stimulusSettings;
+    },
+    stimuliSet(state) {
+      return state.stimuliSet;
     },
   },
 };

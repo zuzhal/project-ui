@@ -3,7 +3,7 @@
 export interface ExperimentInfoDialog {
   id: any;
   language: { language: string[] }; // json in strapi
-  subject: any; 
+  subject: any;
   setup: { setup: string[] }; // json in strapi
 }
 
@@ -29,12 +29,33 @@ export interface ExpEnvSettings {
   ITISet: any; // json in strapi
 }
 
+export interface ExperimentTimes {
+  endrest: number;
+  initial: number;
+  rest: number;
+  stimulus: number;
+}
 export interface Instructions {
   instructions: string;
   instructionsColor: string;
-  background: string;
   title: string;
   titleColor: string;
+}
+
+export interface FixationSettings {
+  fixationColorRest: string;
+  fixationColorTask: string;
+  fixationRadius: number;
+}
+
+/* LC: {arrows: '<<<<<<<', direction: 'left', congruence: 'congruent'}
+LI: {arrows: '>>><>>>', direction: 'left', congruence: 'incongruent'}
+RC: {arrows: '>>>>>>>', direction: 'right', congruence: 'congruent'}
+RI: {arrows: '<<<><<<', direction: 'right', congruence: 'incongruent'} */
+export interface StimulusSettings {
+  // stimuliSet: any;
+  stimulusColor: string;
+  stimulusHeight: number;
 }
 
 export interface ExperimentSettings {
@@ -47,5 +68,10 @@ export interface Experiments {
   experimentLink: string;
   experimentName: string;
   active: boolean;
-  usersPermissionsUser: any // TODO interface
+  usersPermissionsUser: any; // TODO interface
+}
+
+export interface ExperimentStepInt {
+  step: string;
+  component: string;
 }

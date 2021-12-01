@@ -3,7 +3,8 @@
     :is-dialog-visible="isDialogVisible"
     @start-experiment="startExperiment"
   ></set-up-dialog>
-  <component v-if="isExperimentOn" :is="experimentLink"></component>
+    <component v-if="isExperimentOn" :is="experimentLink"></component>
+
   <!-- <fullscreen v-model="isExperimentOn">
   </fullscreen> -->
   <!-- <button class="mt-2 btn btn-primary" @click="isExperimentOn = !isExperimentOn">Turn on the experiment</button> -->
@@ -48,3 +49,23 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+.fixation-center {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.instructions-center {
+  white-space: pre-wrap;
+  height: 100vh;
+  font-size: 1.8em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5%;
+}
+</style>
