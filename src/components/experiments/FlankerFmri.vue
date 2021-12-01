@@ -18,6 +18,7 @@ import { experimentSteps, StepTypes } from "@/data-models/constants";
 import { defineComponent } from "vue";
 import BaseInstructions from "../ui/BaseInstructions.vue";
 import BaseFixation from "../ui/BaseFixation.vue";
+import { getItemsFrom } from "@/helpers";
 
 export default defineComponent({
   components: {
@@ -70,11 +71,11 @@ export default defineComponent({
       this.experimentTimes = this.experimentEnvSettings.times;
       this.stimuliSet = this.$store.getters["experimentConfig/stimuliSet"];
       console.log(this.experimentEnvSettings);
-      console.log(this.stimuliSet);
     },
     startExperiment() {
       this.currentStep = StepTypes.Stimulus;
-
+      let stimuli = getItemsFrom(this.stimuliSet);
+      console.log(JSON.stringify(stimuli.next().value));
       /* for (let block = 0; block < this.nBlocks; block++) {
         for (let trial = 0; trial < this.nTasks; trial++) {
 
