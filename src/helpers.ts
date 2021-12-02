@@ -28,32 +28,37 @@ export function shuffleArray(array) {
 }
 
 // random item from a list generator
-export function* getItemsFrom(l, shuffle = true) {
+export function* getItemsFrom(l, shuffle = true, last = null) {
   /*
     A function that creates a generator for returning random items from lists.
     
     Parameters:
     l -- a list
-    shuffle -- shuffle order of items in the list (default = True)
-    last -- prevent repetition of last x elements (default = None)
+    shuffle -- shuffle order of items in the list (default = true)
+    last -- prevent repetition of last x elements (default = null)
     */
   let m = [];
-  // let p = [];
+  const p = [];
   while (true) {
     if (m.length == 0) {
       if (shuffle) {
         shuffleArray(l);
         m = [...l];
-        /* if last is not None and len(p) > last:
-                    while (m[0] in p[-last:]) or (p[-1] in m[:last]):
-                    shuffleArray(l)
-                        m = list(l) */
+        if (last !== null && p.length > last) {
+          while (
+            p.slice(0, last + 1).includes(m[0]) ||
+            m.slice(0, m.length).includes(p[p.length - 1])
+          ) {
+            shuffleArray(l);
+            m = [...l];
+          }
+        }
       } else {
         m = [...l];
       }
     }
     const i = m.pop();
-    // p.push(i);
+    p.push(i);
     yield i;
   }
 }
