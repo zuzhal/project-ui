@@ -16,7 +16,6 @@ export default defineComponent({
   created() {
     this.stimulusSettings =
       this.$store.getters["experimentConfig/stimulusSettings"];
-    console.log(this.stimulusSettings);
     this.stimulusStyle = {
       color: `rgb(${this.stimulusSettings.stimulusColor})`,
       fontSize: `${this.stimulusSettings.height}em`,

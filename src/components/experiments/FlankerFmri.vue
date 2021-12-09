@@ -4,7 +4,7 @@
   </button>
   <fullscreen v-model="isFullScreen">
     <div :style="bgColor">
-      <component :is="nextStep" :isFixationRest="changeFixationType">
+      <component :is="nextStepComponent" :isFixationRest="changeFixationType">
         {{ stimulusText }}
       </component>
     </div>
@@ -12,12 +12,26 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable no-unused-vars */
+
 import { ExpEnvSettings, ExperimentTimes } from "@/data-models/models";
 import { experimentSteps, StepTypes } from "@/data-models/constants";
 import { defineComponent } from "vue";
 import BaseInstructions from "../ui/BaseInstructions.vue";
 import BaseFixation from "../ui/BaseFixation.vue";
 import { getItemsFrom } from "@/helpers";
+import {
+  Subject,
+  takeUntil,
+  fromEvent,
+  timer,
+  merge,
+  switchMap,
+  startWith,
+  interval,
+  take,
+  tap,
+} from "rxjs";
 
 interface FlankerStimulus {
   text: string;
@@ -37,83 +51,124 @@ export default defineComponent({
       experimentTimes: {} as ExperimentTimes,
       isFullScreen: false,
       experimentSteps: experimentSteps, // object containing names of steps and components
-      currentStep: StepTypes.Instructions, // enum containing names of steps
+      currentStep: StepTypes.Instructions, // enum containing names of steps, first step is showing instructions
       isFixationRest: true,
-      nBlocks: 2,
+      nBlocks: 2, // TODO from BE
       nTasks: 5,
-      stimuliSet: Array<[String, String, String, String]>(),
+      stimuliGenerator: null,
       stimulus: {} as FlankerStimulus,
-      ItiSet: [],
+      ItiTimesGenerator: {}, // TODO TR, safety, also from BE right now, its manually calculated and put in the database
+      timer$: new Subject(),
+      timesUp$: new Subject(),
+      key$: fromEvent(window, "keyup"),
+      onDestroy: new Subject(),
     };
   },
   created() {
     this.getExperimentConfig();
+
+    merge(this.timesUp$, this.key$)
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe((event) => {
+        switch (this.currentStep) {
+          case StepTypes.Instructions: {
+            this.currentStep = StepTypes.FixationRest;
+            let timeout = timer(2000) // TODO use data from BE
+              .pipe(take(1))
+              .subscribe(() => {
+                this.startExperiment();
+              });
+            break;
+          }
+          case StepTypes.Stimulus: {
+            let fixationTime = this.ItiTimesGenerator[this.stimulus.code].next().value;
+              this.currentStep = StepTypes.FixationTask;
+            if (fixationTime < 2) {
+              fixationTime = 1.5 // TODO toto tu nema co robit
+            }
+            if (event instanceof KeyboardEvent) {
+              this.resetTimerStimulus();
+            }
+            const fixationTimer = timer(
+              fixationTime * 1000
+            )
+              .pipe(take(1), tap(this.setStimulusInfo()))
+              .subscribe(() => (this.currentStep = StepTypes.Stimulus));
+            break;
+          }
+        }
+      });
   },
   mounted() {
-    let self = this;
-
-    window.addEventListener("keyup", function () {
-      switch (self.currentStep) {
+    this.key$.pipe(takeUntil(this.onDestroy)).subscribe(() => {
+      // this.keyDownHandler();
+    });
+  },
+  unmounted() {
+    this.onDestroy.next();
+  },
+  methods: {
+    keyDownHandler(e) {
+      switch (this.currentStep) {
         case StepTypes.Instructions: {
-          self.currentStep = StepTypes.Fixation;
-          setTimeout(() => {
-            self.currentStep = StepTypes.FixationTask;
-            self.isFixationRest = false;
-            setTimeout(() => {
-              self.startExperiment();
-            }, 500);
-          }, self.experimentTimes["initial"] * 1000);
-          break;
-        }
-        case StepTypes.Stimulus: {
-          console.log("Stimuli");
-          // log key press when in Stimulus step and move to the next stimulus
           break;
         }
       }
-    });
-  },
-  methods: {
+    },
     getExperimentConfig() {
       this.experimentEnvSettings =
         this.$store.getters["experimentConfig/experimentEnvSettings"];
       this.experimentTimes = this.experimentEnvSettings.times;
-      this.stimuliSet = this.$store.getters["experimentConfig/stimuliSet"];
-      this.ItiSet = this.experimentEnvSettings.ITISet.intervals;
+      this.stimuliGenerator = getItemsFrom(
+        this.$store.getters["experimentConfig/stimuliSet"]
+      );
+      this.ItiTimesGenerator = this.setItiTimesGenerator();
       console.log(this.experimentEnvSettings);
     },
     startExperiment() {
-      let stimuli = getItemsFrom(this.stimuliSet); // random items generator
-      let ITI = {
-        LC: getItemsFrom(this.ItiSet),
-        LI: getItemsFrom(this.ItiSet),
-        RC: getItemsFrom(this.ItiSet),
-        RI: getItemsFrom(this.ItiSet),
-      };
-      for (let block = 0; block < this.nBlocks; block++) {
-        // task fixation should be shown
-        for (let trial = 0; trial < this.nTasks; trial++) {
+      this.currentStep = StepTypes.FixationTask;
+      this.isFixationRest = false;
+
+      const startExp = timer(2000)
+        .pipe(take(1))
+        .subscribe(() => {
+          this.setStimulusInfo();
           this.currentStep = StepTypes.Stimulus;
-          const [text, direction, congruency, code] = stimuli.next().value;
-          let ItiTime = ITI[code].next().value;
-          this.delay(trial, block, { text, direction, congruency }, ItiTime); 
-          // after the stimulus is shown for x seconds, I want to show the task fixation
-        }
-      }
+          this.setStimulusTimer();
+        });
     },
-    delay(trial, block, stimuli, ItiTime = 1) {
-      setTimeout(() => {
-        this.stimulus = {
-          ...stimuli,
-        };
-      }, ItiTime * 2 * trial + 1 * block + 1 * 1000);
+    setStimulusTimer(delay = 5000) {
+      this.timer$
+        .pipe(
+          startWith(void 0),
+          takeUntil(this.onDestroy),
+          switchMap((period: number) => interval(period || delay))
+        )
+        .subscribe(() => this.timesUp$.next("TIME"));
+    },
+    resetTimerStimulus() {
+      this.timer$.next(this.experimentTimes.stimulus * 1000);
+    },
+    setItiTimesGenerator() {
+      const intervals = this.experimentEnvSettings.ITISet.intervals;
+      return {
+        LC: getItemsFrom(intervals),
+        LI: getItemsFrom(intervals),
+        RC: getItemsFrom(intervals),
+        RI: getItemsFrom(intervals),
+      };
+    },
+    setStimulusInfo() {
+      const [text, direction, congruency, code] =
+        this.stimuliGenerator.next().value;
+      this.stimulus = { text, direction, congruency, code };
     },
   },
   computed: {
     changeFixationType() {
       return this.isFixationRest;
     },
-    nextStep() {
+    nextStepComponent() {
       return this.experimentSteps[this.currentStep].component;
     },
     bgColor() {

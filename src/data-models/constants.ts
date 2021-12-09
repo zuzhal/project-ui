@@ -1,6 +1,6 @@
 export enum StepTypes {
   Instructions = "instructions",
-  Fixation = "fixation",
+  FixationRest = "fixation",
   FixationTask = "fixationTask",
   Stimulus = "stimulus",
   End = "end",
@@ -12,7 +12,7 @@ export const experimentSteps = {
     component: "base-instructions",
   },
   fixation: {
-    step: "fixation",
+    step: "fixationRest",
     component: "base-fixation",
   },
   fixationTask: {
