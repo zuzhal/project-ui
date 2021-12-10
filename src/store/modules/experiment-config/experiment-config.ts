@@ -1,4 +1,3 @@
-import { PropType } from "vue";
 import {
   ExperimentSettings,
   FixationSettings,
@@ -20,7 +19,6 @@ export default {
       fixationSettings: {} as FixationSettings,
       stimuliSettings: {} as StimulusSettings,
       stimuliSet: Array<[String, String, String, String]>(),
-      // expEnvSettings: Object as PropType<ExpEnvSettings>,
     };
   },
   mutations: {

@@ -4,7 +4,6 @@
       <p :style="styleTitle">{{ instructionsSett.title }}</p>
       <p>
         {{ instructionsSett.instructions }}
-        <!-- IDK why is here an error -->
       </p>
     </div>
   </div>
@@ -12,7 +11,7 @@
 
 <script lang="ts">
 import { Instructions } from "@/data-models/models";
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   created() {
@@ -29,7 +28,7 @@ export default defineComponent({
   },
   data() {
     return {
-      instructionsSett: Object as PropType<Instructions>,
+      instructionsSett: {} as Instructions,
       styleInstructions: {},
       styleTitle: {},
     };
@@ -37,5 +36,4 @@ export default defineComponent({
 });
 </script>
 
-<style>
-</style>
+<style></style>

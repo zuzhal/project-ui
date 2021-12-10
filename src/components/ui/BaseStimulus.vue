@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { StimulusSettings } from "@/data-models/models";
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   created() {
@@ -24,7 +24,7 @@ export default defineComponent({
   data() {
     return {
       stimulusStyle: {},
-      stimulusSettings: Object as PropType<StimulusSettings>,
+      stimulusSettings: {} as StimulusSettings,
     };
   },
 });

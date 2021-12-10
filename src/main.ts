@@ -15,6 +15,7 @@ import BaseCard from "./components/ui/BaseCard.vue";
 import BaseInstructions from "./components/ui/BaseInstructions.vue";
 import BaseFixation from "./components/ui/BaseFixation.vue";
 import BaseStimulus from "./components/ui/BaseStimulus.vue";
+import ExperimentEnded from "./components/views/ExperimentEnded.vue";
 
 import FlankerFmri from "./components/experiments/FlankerFmri.vue";
 
@@ -39,6 +40,7 @@ app.component("base-card", BaseCard);
 app.component("base-instructions", BaseInstructions);
 app.component("base-fixation", BaseFixation);
 app.component("base-stimulus", BaseStimulus);
+app.component("experiment-ended", ExperimentEnded);
 
 // -- Experiments
 app.component("flanker-fmri", FlankerFmri);

@@ -55,6 +55,8 @@ export default defineComponent({
       isFixationRest: true,
       nBlocks: 2, // TODO from BE
       nTasks: 5,
+      nBlocksCopy: 2,
+      nTasksCopy: 5,
       stimuliGenerator: null,
       stimulus: {} as FlankerStimulus,
       ItiTimesGenerator: {}, // TODO TR, safety, also from BE right now, its manually calculated and put in the database
@@ -62,18 +64,20 @@ export default defineComponent({
       timesUp$: new Subject(),
       key$: fromEvent(window, "keyup"),
       onDestroy: new Subject(),
+      onExpFinish: new Subject(),
+      fixationTaskTime: 2000,
     };
   },
   created() {
     this.getExperimentConfig();
 
     merge(this.timesUp$, this.key$)
-      .pipe(takeUntil(this.onDestroy))
+      .pipe(takeUntil(this.onExpFinish))
       .subscribe((event) => {
         switch (this.currentStep) {
           case StepTypes.Instructions: {
             this.currentStep = StepTypes.FixationRest;
-            let timeout = timer(2000) // TODO use data from BE
+            let timeout = timer(this.experimentTimes.initial * 1000) // TODO use data from BE
               .pipe(take(1))
               .subscribe(() => {
                 this.startExperiment();
@@ -81,40 +85,38 @@ export default defineComponent({
             break;
           }
           case StepTypes.Stimulus: {
-            let fixationTime = this.ItiTimesGenerator[this.stimulus.code].next().value;
-              this.currentStep = StepTypes.FixationTask;
+            this.currentStep = StepTypes.FixationTask;
+            let fixationTime =
+              this.ItiTimesGenerator[this.stimulus.code].next().value;
             if (fixationTime < 2) {
-              fixationTime = 1.5 // TODO toto tu nema co robit
+              fixationTime = 1.5; // TODO toto tu nema co robit
             }
             if (event instanceof KeyboardEvent) {
               this.resetTimerStimulus();
             }
-            const fixationTimer = timer(
-              fixationTime * 1000
-            )
-              .pipe(take(1), tap(this.setStimulusInfo()))
-              .subscribe(() => (this.currentStep = StepTypes.Stimulus));
+            const fixationTimer = timer(fixationTime * 1000)
+              .pipe(take(1), tap(this.setNextStimulusInfo()))
+              .subscribe(() => {
+                if (this.nTasksCopy == 0) {
+                  this.resetTrialsForNextBlock();
+                } else {
+                  this.currentStep = StepTypes.Stimulus;
+                  this.nTasksCopy -= 1;
+                }
+              });
             break;
           }
         }
       });
   },
   mounted() {
-    this.key$.pipe(takeUntil(this.onDestroy)).subscribe(() => {
-      // this.keyDownHandler();
-    });
+    this.key$.pipe(takeUntil(this.onDestroy)).subscribe(() => {});
   },
   unmounted() {
     this.onDestroy.next();
+    this.onExpFinish.next();
   },
   methods: {
-    keyDownHandler(e) {
-      switch (this.currentStep) {
-        case StepTypes.Instructions: {
-          break;
-        }
-      }
-    },
     getExperimentConfig() {
       this.experimentEnvSettings =
         this.$store.getters["experimentConfig/experimentEnvSettings"];
@@ -126,13 +128,11 @@ export default defineComponent({
       console.log(this.experimentEnvSettings);
     },
     startExperiment() {
-      this.currentStep = StepTypes.FixationTask;
-      this.isFixationRest = false;
-
-      const startExp = timer(2000)
+      this.setFixation(false, StepTypes.FixationTask);
+      const startExp = timer(this.fixationTaskTime)
         .pipe(take(1))
         .subscribe(() => {
-          this.setStimulusInfo();
+          this.setNextStimulusInfo();
           this.currentStep = StepTypes.Stimulus;
           this.setStimulusTimer();
         });
@@ -158,10 +158,48 @@ export default defineComponent({
         RI: getItemsFrom(intervals),
       };
     },
-    setStimulusInfo() {
+    setNextStimulusInfo() {
       const [text, direction, congruency, code] =
         this.stimuliGenerator.next().value;
       this.stimulus = { text, direction, congruency, code };
+    },
+    setFixation(isRest: boolean, step: StepTypes) {
+      this.currentStep = step;
+      this.isFixationRest = isRest;
+    },
+    resetTrialsForNextBlock() {
+      this.setFixation(false, StepTypes.FixationTask);
+      this.nTasksCopy = this.nTasks;
+      this.nBlocksCopy -= 1;
+      if (this.nBlocksCopy == 0) {
+        this.finishExperiment();
+      } else {
+        this.setNextStimulusInfo();
+        const resetBetweenBlocks = timer(this.fixationTaskTime)
+          .pipe(
+            take(1),
+            tap((_) => this.setFixation(true, StepTypes.FixationRest)),
+            switchMap(() => timer(this.experimentTimes.rest * 100).pipe()),
+            tap((_) => this.setFixation(false, StepTypes.FixationTask)),
+            switchMap(() => timer(this.fixationTaskTime).pipe()),
+            tap((_) => (this.currentStep = StepTypes.Stimulus))
+          )
+          .subscribe();
+      }
+    },
+    finishExperiment() {
+      const resetBetweenBlocks = timer(this.fixationTaskTime)
+        .pipe(
+          take(1),
+          tap((_) => this.setFixation(true, StepTypes.FixationRest)),
+          switchMap(() =>
+            timer(
+              (this.experimentTimes.rest + this.experimentTimes.endrest) * 100
+            ).pipe()
+          ),
+          tap((_) => (this.currentStep = StepTypes.End))
+        )
+        .subscribe((_) => this.onExpFinish.next());
     },
   },
   computed: {

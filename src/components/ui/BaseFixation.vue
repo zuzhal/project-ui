@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { FixationSettings } from "@/data-models/models";
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
@@ -28,7 +28,7 @@ export default defineComponent({
   data() {
     return {
       fixationStyle: {},
-      fixationSettings: Object as PropType<FixationSettings>,
+      fixationSettings: {} as FixationSettings,
     };
   },
   methods: {
