@@ -4,7 +4,7 @@
   </button>
   <fullscreen v-model="isFullScreen">
     <div :style="bgColor">
-      <component :is="nextStepComponent" :isFixationRest="changeFixationType">
+      <component :is="nextStepComponent" :isFixationRest="changeFixationType" :isEnd="isEnd">
         {{ stimulusText }}
       </component>
     </div>
@@ -47,11 +47,12 @@ export default defineComponent({
   },
   data() {
     return {
-      experimentEnvSettings: {} as ExpEnvSettings, // settings of the experiment from BackEnd
+      experimentEnvSettings: {} as ExpEnvSettings,
       experimentTimes: {} as ExperimentTimes,
       isFullScreen: false,
-      experimentSteps: experimentSteps, // object containing names of steps and components
-      currentStep: StepTypes.Instructions, // enum containing names of steps, first step is showing instructions
+      isEnd: false,
+      experimentSteps: experimentSteps,
+      currentStep: StepTypes.Instructions,
       isFixationRest: true,
       nBlocks: 2, // TODO from BE
       nTasks: 5,
@@ -188,6 +189,7 @@ export default defineComponent({
       }
     },
     finishExperiment() {
+      this.isEnd = true;
       const resetBetweenBlocks = timer(this.fixationTaskTime)
         .pipe(
           take(1),

@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "./components/views/Home.vue";
 import NotFound from "./components/views/NotFound.vue";
-import ExperimentEnded from "./components/views/ExperimentEnded.vue";
 import BaseExperiment from "./components/ui/BaseExperiment.vue";
 import store from "./store/index";
 
@@ -20,7 +19,6 @@ const router = createRouter({
       }
     },
     { path: "/:notFound(.*)", component: NotFound },
-    { path: "/end", component: ExperimentEnded },
   ],
 });
 

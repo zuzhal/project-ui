@@ -2,6 +2,7 @@ import {
   ExperimentSettings,
   FixationSettings,
   Instructions,
+  ReportSettings,
   StimulusSettings,
 } from "../../../data-models/models";
 import { flattenObject } from "../../../helpers";
@@ -19,6 +20,7 @@ export default {
       fixationSettings: {} as FixationSettings,
       stimuliSettings: {} as StimulusSettings,
       stimuliSet: Array<[String, String, String, String]>(),
+      reportSettings: {} as ReportSettings,
     };
   },
   mutations: {
@@ -60,7 +62,15 @@ export default {
     },
     setStimuliSet(state, payload) {
       state.stimuliSet = payload[0].expEnvSettings.stimuliSet.set;
-    }
+    },
+    setReportSettings(state, payload) {
+      state.reportSettings = {
+        // stimuliSet: payload[0].expEnvSettings.stimuliSet,
+        reportColor: payload[0].expEnvSettings.reportColor,
+        report: payload[0].expEnvSettings.report,
+        reportFontSize: payload[0].expEnvSettings.reportFontSize,
+      };
+    },
   },
   actions: {
     async loadExpSettings({ commit, getters }) {
@@ -79,6 +89,7 @@ export default {
       commit("setFixationSettings", responseData);
       commit("setStimuliSettings", responseData);
       commit("setStimuliSet", responseData);
+      commit("setReportSettings", responseData);
     },
 
     async loadSettingsDialog({ commit, getters }) {
@@ -121,6 +132,9 @@ export default {
     },
     stimuliSet(state) {
       return state.stimuliSet;
+    },
+    reportSettings(state) {
+      return state.reportSettings;
     },
   },
 };

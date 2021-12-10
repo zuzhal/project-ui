@@ -25,6 +25,6 @@ export const experimentSteps = {
   },
   end: {
     step: "end",
-    component: "experiment-ended",
+    component: "base-instructions",
   },
 };

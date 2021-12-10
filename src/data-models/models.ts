@@ -42,16 +42,18 @@ export interface Instructions {
   titleColor: string;
 }
 
+export interface ReportSettings {
+  report: string;
+  reportColor: string;
+  reportFontSize: number;
+}
+
 export interface FixationSettings {
   fixationColorRest: string;
   fixationColorTask: string;
   fixationRadius: number;
 }
 
-/* LC: {arrows: '<<<<<<<', direction: 'left', congruence: 'congruent'}
-LI: {arrows: '>>><>>>', direction: 'left', congruence: 'incongruent'}
-RC: {arrows: '>>>>>>>', direction: 'right', congruence: 'congruent'}
-RI: {arrows: '<<<><<<', direction: 'right', congruence: 'incongruent'} */
 export interface StimulusSettings {
   // stimuliSet: any;
   stimulusColor: string;
