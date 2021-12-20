@@ -77,3 +77,10 @@ export interface ExperimentStepInt {
   step: string;
   component: string;
 }
+
+export interface FlankerStimulus {
+  text: string;
+  direction: string;
+  congruency: string;
+  code: string;
+}

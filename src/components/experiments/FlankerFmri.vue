@@ -14,7 +14,7 @@
 <script lang="ts">
 /* eslint-disable no-unused-vars */
 
-import { ExpEnvSettings, ExperimentTimes } from "@/data-models/models";
+import { ExpEnvSettings, ExperimentTimes, FlankerStimulus } from "@/data-models/models";
 import { experimentSteps, StepTypes } from "@/data-models/constants";
 import { defineComponent } from "vue";
 import BaseInstructions from "../ui/BaseInstructions.vue";
@@ -33,13 +33,6 @@ import {
   tap,
 } from "rxjs";
 
-interface FlankerStimulus {
-  text: string;
-  direction: string;
-  congruency: string;
-  code: string;
-}
-
 export default defineComponent({
   components: {
     BaseInstructions,
@@ -49,7 +42,7 @@ export default defineComponent({
     return {
       experimentEnvSettings: {} as ExpEnvSettings,
       experimentTimes: {} as ExperimentTimes,
-      isFullScreen: false,
+      isFullScreen: false, //
       isEnd: false,
       experimentSteps: experimentSteps,
       currentStep: StepTypes.Instructions,
