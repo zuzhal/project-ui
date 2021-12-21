@@ -1,6 +1,6 @@
 <template>
-  <the-header></the-header>
-  <div class="container">
+  <the-header v-if="loggedIn()"></the-header>
+  <div class="container" id="app">
     <router-view v-slot="slotProps">
       <component :is="slotProps.Component"></component>
     </router-view>
@@ -18,6 +18,13 @@ export default defineComponent({
     TheHeader,
     Home,
   },
+  methods: {
+    loggedIn() {
+      const user = this.$store.getters["authentication/loggedUser"];
+      console.log(user);
+      return Object.keys(user).length === 0 ? false : true; 
+    }
+  }
 });
 </script>
 
@@ -28,7 +35,17 @@ export default defineComponent({
   box-sizing: border-box;
 }
 
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 html {
-  font-family: "Roboto", sans-serif;
+  font-family: Roboto, sans-serif;
 }
 </style>

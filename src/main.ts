@@ -7,9 +7,9 @@ import "vue-progress-path/dist/vue-progress-path.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSignOutAlt, faUser, faAt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faSignOutAlt, faAt, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import BaseCard from "./components/ui/BaseCard.vue";
 import BaseInstructions from "./components/ui/BaseInstructions.vue";
@@ -24,13 +24,12 @@ import "element-plus/dist/index.css";
 import store from "./store/index";
 import VueFullscreen from "vue-fullscreen";
 
-
 library.add(faSignOutAlt, faUser, faAt);
 
 const app = createApp(App);
 
 app.use(ElementPlus);
-app.use(VueFullscreen)
+app.use(VueFullscreen);
 app.use(router);
 app.use(store);
 

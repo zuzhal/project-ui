@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import UserCard from "../ui/UserCard.vue";
+import UserCard from "./UserCard.vue";
 import Experiments from "./Experiments.vue";
 import { defineComponent } from "vue";
 

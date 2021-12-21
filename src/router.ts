@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "./components/views/Home.vue";
 import NotFound from "./components/views/NotFound.vue";
 import StartExperiment from "./components/ui/StartExperiment.vue";
+import Login from "./components/views/Login.vue";
 import store from "./store/index";
 
 
@@ -9,6 +10,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: "/", redirect: "/admin-home" },
+    { path: "/login", component: Login },
     { path: "/admin-home", component: Home }, // TODO Guards
     {
       path: "/experiment/:id/:link",
