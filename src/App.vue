@@ -1,4 +1,5 @@
 <template>
+  <loader></loader>
   <the-header v-if="loggedIn()"></the-header>
   <div class="container" id="app">
     <router-view v-slot="slotProps">
@@ -10,6 +11,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import TheHeader from "./components/ui/TheHeader.vue";
+import Loader from "./components/ui/Loader.vue";
 import Home from "./components/views/Home.vue";
 
 export default defineComponent({
@@ -17,13 +19,14 @@ export default defineComponent({
   components: {
     TheHeader,
     Home,
+    Loader,
   },
   methods: {
     loggedIn() {
       const user = this.$store.getters["authentication/loggedUser"];
-      return Object.keys(user).length === 0 ? false : true; 
-    }
-  }
+      return Object.keys(user).length === 0 ? false : true;
+    },
+  },
 });
 </script>
 

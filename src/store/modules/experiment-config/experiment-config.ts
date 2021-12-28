@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   ExperimentSettings,
   FixationSettings,
@@ -6,7 +7,6 @@ import {
   StimulusSettings,
 } from "../../../data-models/models";
 import { flattenObject } from "../../../utils/helpers";
-import axios from "axios";
 
 const API_URL = "http://localhost:1337/";
 

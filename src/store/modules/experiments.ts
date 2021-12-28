@@ -1,5 +1,5 @@
+import axios from "axios";
 import { Experiments } from "../../data-models/models";
-import axios from 'axios';
 
 const API_URL = "http://localhost:1337/";
 

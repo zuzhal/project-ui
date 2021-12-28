@@ -1,5 +1,6 @@
+import axios from "axios";
 import router from "../../router";
-import axios from 'axios';
+// import axios from 'axios';
 
 const API_URL = "http://localhost:1337/";
 

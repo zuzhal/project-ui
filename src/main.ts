@@ -22,9 +22,34 @@ import "element-plus/dist/index.css";
 import store from "./store/index";
 import VueFullscreen from "vue-fullscreen";
 
+import axios from "axios";
+
 library.add(faSignOutAlt, faUser, faAt);
 
 const app = createApp(App);
+app.config.globalProperties.axios = axios;
+
+axios.interceptors.request.use(
+  (config) => {
+    store.dispatch("loader/pending");
+    return config;
+  },
+  (error) => {
+    store.dispatch("loader/done");
+    return Promise.reject(error);
+  }
+);
+axios.interceptors.response.use(
+  (response) => {
+    store.dispatch("loader/done");
+    return response;
+  },
+  (error) => {
+    const response = error.response;
+    store.dispatch("loader/done");
+    return Promise.reject(error);
+  }
+);
 
 app.use(store);
 app.use(ElementPlus);
