@@ -19,7 +19,7 @@ import { experimentSteps, StepTypes } from "@/data-models/constants";
 import { defineComponent } from "vue";
 import BaseInstructions from "../ui/BaseInstructions.vue";
 import BaseFixation from "../ui/BaseFixation.vue";
-import { getItemsFrom } from "@/helpers";
+import { getItemsFrom } from "@/utils/helpers";
 import {
   Subject,
   takeUntil,

@@ -5,7 +5,8 @@ import {
   ReportSettings,
   StimulusSettings,
 } from "../../../data-models/models";
-import { flattenObject } from "../../../helpers";
+import { flattenObject } from "../../../utils/helpers";
+import axios from "axios";
 
 const API_URL = "http://localhost:1337/";
 
@@ -74,35 +75,36 @@ export default {
   },
   actions: {
     async loadExpSettings({ commit, getters }) {
-      const response = await fetch(
-        API_URL + "experiment-settings?experimentName=" + getters.experimentName
-      );
-
-      const responseData = await response.json(); // then() ??
-      // console.log(responseData);
-      if (!response.ok) {
-        // handle errors
+      try {
+        const response = await axios.get(
+          API_URL +
+            "experiment-settings?experimentName=" +
+            getters.experimentName
+        );
+        const responseData = response.data;
+        commit("setExperimentSettings", responseData);
+        commit("setInstructionsSettings", responseData);
+        commit("setFixationSettings", responseData);
+        commit("setStimuliSettings", responseData);
+        commit("setStimuliSet", responseData);
+        commit("setReportSettings", responseData);
+      } catch (error) {
+        alert(error);
+        console.error(error);
       }
-
-      commit("setExperimentSettings", responseData);
-      commit("setInstructionsSettings", responseData);
-      commit("setFixationSettings", responseData);
-      commit("setStimuliSettings", responseData);
-      commit("setStimuliSet", responseData);
-      commit("setReportSettings", responseData);
     },
 
     async loadSettingsDialog({ commit, getters }) {
-      const response = await fetch(
-        API_URL + "settings-dialog?experimentName=" + getters.experimentName
-      );
+      try {
+        const response = await axios.get(
+          API_URL + "settings-dialog?experimentName=" + getters.experimentName
+        );
 
-      const responseData = await response.json();
-      if (!response.ok) {
-        // handle errors
+        commit("setSettingsDialog", response.data);
+      } catch (error) {
+        alert(error);
+        console.error(error);
       }
-
-      commit("setSettingsDialog", responseData);
     },
   },
   getters: {

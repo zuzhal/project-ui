@@ -21,7 +21,6 @@ export default defineComponent({
   methods: {
     loggedIn() {
       const user = this.$store.getters["authentication/loggedUser"];
-      console.log(user);
       return Object.keys(user).length === 0 ? false : true; 
     }
   }

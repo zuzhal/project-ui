@@ -2,8 +2,6 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import "./index.css";
-import "vue-progress-path/dist/vue-progress-path.css";
-// import VueProgress from 'vue-progress-path'
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
@@ -28,10 +26,10 @@ library.add(faSignOutAlt, faUser, faAt);
 
 const app = createApp(App);
 
+app.use(store);
 app.use(ElementPlus);
 app.use(VueFullscreen);
 app.use(router);
-app.use(store);
 
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("base-card", BaseCard);

@@ -1,5 +1,5 @@
 import { Experiments } from "../../data-models/models";
-
+import axios from 'axios';
 
 const API_URL = "http://localhost:1337/";
 
@@ -18,22 +18,18 @@ export default {
   },
   actions: {
     async loadExperiments({ commit }) {
-      const response = await fetch(
-        API_URL + "experiments"
-      );
-
-      const responseData = await response.json();
-      // console.log(responseData);
-      if (!response.ok) {
-        // handle errors
+      try {
+        const response = await axios.get(API_URL + "experiments");
+        commit("setExperiments", response.data);
+      } catch (error) {
+        alert(error);
+        console.error(error);
       }
-
-      commit("setExperiments", responseData);
     },
   },
   getters: {
     experiments(state) {
       return state.experiments;
-    }
+    },
   },
 };
