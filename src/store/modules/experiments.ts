@@ -26,6 +26,17 @@ export default {
         console.error(error);
       }
     },
+
+    async setStatus(context, { active, id }) {
+      try {
+        const response = await axios.put(`${API_URL}experiments/${id}`, {
+          active,
+        });
+      } catch (error) {
+        alert(error);
+        console.error(error);
+      }
+    },
   },
   getters: {
     experiments(state) {

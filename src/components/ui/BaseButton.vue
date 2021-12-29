@@ -1,6 +1,6 @@
 <template>
-  <router-link :to="to">
-    <el-button type="text">
+  <router-link :to="to" :disabled="isDisabled">
+    <el-button type="text" :disabled="isDisabled">
       <slot></slot>
     </el-button>
   </router-link>
@@ -15,6 +15,12 @@ export default defineComponent({
       type: String,
       required: false,
       default: "/",
+    },
+    disabled: { default: false },
+  },
+  computed: {
+    isDisabled() {
+      return this.disabled;
     },
   },
 });

@@ -30,7 +30,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 * {
@@ -49,5 +49,14 @@ export default defineComponent({
 
 html {
   font-family: Roboto, sans-serif;
+}
+
+.badge.bg {
+  &-success {
+    background-color: #67c23a !important;
+  }
+  &-danger {
+    background-color: #f56c6c !important;
+  }
 }
 </style>
