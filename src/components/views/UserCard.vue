@@ -47,4 +47,8 @@ export default {
     background-image: url("../../assets/avatar.png");
   }
 }
+
+.row {
+  text-align: left;
+}
 </style>
