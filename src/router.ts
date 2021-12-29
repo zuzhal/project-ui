@@ -14,10 +14,16 @@ const router = createRouter({
     { path: "/admin-home", component: Home }, // TODO Guards
     {
       path: "/experiment/:id/:link",
+      name: "startExperiment",
       component: StartExperiment,
       beforeEnter: (to, from, next) => {
-        store.commit('experimentConfig/setExperimentName', to.params.link);
-        next();
+        console.log(to.params);
+        if(to.params.status == "true") {
+          store.commit('experimentConfig/setExperimentName', to.params.link);
+          next();
+        } else {
+          alert("Experiment is inactive");
+        }
       }
     },
     { path: "/:notFound(.*)", component: NotFound },

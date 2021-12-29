@@ -3,9 +3,11 @@
   <el-table :data="experiments" height="250" style="width: 100%">
     <el-table-column label="Experiment Name">
       <template #default="scope">
+        <!--           :to="`/experiment/${scope.row.id}/${scope.row.experimentLink}`"-->
         <base-button
-          :to="`/experiment/${scope.row.id}/${scope.row.experimentLink}`"
-          :disabled="!scope.row.active"
+          :status="scope.row.active"
+          :id="scope.row.id"
+          :link="scope.row.experimentLink"
         >
           {{ scope.row.experimentName }}
         </base-button>

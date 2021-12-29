@@ -1,5 +1,8 @@
 <template>
-  <router-link :to="to" :disabled="isDisabled">
+  <router-link
+    :to="{ name: 'startExperiment', params: { status, id, link } }"
+    :disabled="isDisabled"
+  >
     <el-button type="text" :disabled="isDisabled">
       <slot></slot>
     </el-button>
@@ -11,16 +14,18 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
-    to: {
+    /* to: {
       type: String,
       required: false,
       default: "/",
-    },
-    disabled: { default: false },
+    }, */
+    id: { default: null },
+    link: { default: "" },
+    status: { default: false },
   },
   computed: {
     isDisabled() {
-      return this.disabled;
+      return !this.status;
     },
   },
 });
