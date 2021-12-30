@@ -5,29 +5,43 @@ import StartExperiment from "./components/ui/StartExperiment.vue";
 import Login from "./components/views/Login.vue";
 import store from "./store/index";
 
-
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: "/", redirect: "/admin-home" },
     { path: "/login", component: Login },
-    { path: "/admin-home", component: Home }, // TODO Guards
+    {
+      path: "/admin-home",
+      component: Home,
+      meta: {
+        auth: true // protected route
+      },
+    },
     {
       path: "/experiment/:id/:link",
       name: "startExperiment",
       component: StartExperiment,
       beforeEnter: (to, from, next) => {
-        console.log(to.params);
-        if(to.params.status == "true") {
-          store.commit('experimentConfig/setExperimentName', to.params.link);
+        if (to.params.status == "true") {
+          store.commit("experimentConfig/setExperimentName", to.params.link);
           next();
         } else {
           alert("Experiment is inactive");
         }
-      }
+      },
     },
     { path: "/:notFound(.*)", component: NotFound },
   ],
 });
+
+/* router.beforeEach((to, from, next) => {    
+  const isLoggedIn = store.getters["authentication/isAuthenticated"];
+  if (to.meta.auth && !isLoggedIn) {
+    next('/login')
+  }    
+  else {
+    next()
+  }    
+}) */
 
 export default router;

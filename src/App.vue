@@ -23,8 +23,8 @@ export default defineComponent({
   },
   methods: {
     loggedIn() {
-      const user = this.$store.getters["authentication/loggedUser"];
-      return Object.keys(user).length === 0 ? false : true;
+      const isLoggedIn = this.$store.getters["authentication/isAuthenticated"];
+      return isLoggedIn;
     },
   },
 });

@@ -9,6 +9,7 @@ export default {
   state() {
     return {
       loggedUser: {},
+      isAuthenticated: false,
     };
   },
 
@@ -18,6 +19,7 @@ export default {
         jwt: JSON.stringify(payload.jwt),
         user: payload.user,
       };
+      state.isAuthenticated = true;
     },
   },
   actions: {
@@ -42,7 +44,10 @@ export default {
   },
   getters: {
     loggedUser(state) {
-      return state.loggedUser;
+      return state.loggedUser.user;
     },
+    isAuthenticated(state) {
+      return state.isAuthenticated;
+    }
   },
 };

@@ -77,3 +77,11 @@ export interface ExperimentStepInt {
   step: string;
   component: string;
 }
+
+export interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  role: any;
+}
