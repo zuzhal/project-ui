@@ -5,8 +5,8 @@ import {
   Instructions,
   ReportSettings,
   StimulusSettings,
-} from "../../../data-models/models";
-import { flattenObject } from "../../../utils/helpers";
+} from "../../data-models/models";
+import { flattenObject } from "../../utils/helpers";
 
 const API_URL = "http://localhost:1337/";
 
