@@ -1,5 +1,6 @@
-// ------ Experiment interfaces
+import { LogStepTypes } from './constants';
 
+// ------ Experiment interfaces
 export interface ExperimentInfoDialog {
   id: any;
   language: { language: string[] }; // json in strapi
@@ -84,4 +85,35 @@ export interface User {
   lastName: string;
   username: string;
   role: any;
+}
+
+//---- Experiment Logs ------------
+export interface LogInfo {
+  name: string;
+  dateTimeLog: string;
+  subjectName: string;
+}
+
+export interface Step {
+  name: LogStepTypes ;
+  dateTimeStep: string;
+}
+
+export interface FlankerResponse {
+  code: string;
+  congurency: "congruent" | "incongruent";
+  direction: "left" | "right";
+  ITI: string;
+  response: string;
+  correct: boolean;
+  stimulusTime: string;
+  reactionTime: string;
+  block: number;
+  trial: number;
+}
+
+export interface ExperimentLog {
+  info: LogInfo;
+  stepInfo: Step;
+  response?: FlankerResponse;
 }

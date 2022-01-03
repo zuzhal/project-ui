@@ -15,7 +15,9 @@
 </template>
 
 <script lang="ts">
+import { LogStepTypes } from "@/data-models/constants";
 import { Instructions, ReportSettings } from "@/data-models/models";
+import { saveLogLocal } from "@/services/experiment-logging";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -23,8 +25,8 @@ export default defineComponent({
     isEnd: { type: Boolean, default: false },
   },
   created() {
-    console.log("created");
     if (!this.isEnd) {
+      saveLogLocal({ step: LogStepTypes.Instructions });
       this.textSett =
         this.$store.getters["experimentConfig/instructionsSettings"];
       this.textStyle = {
@@ -35,6 +37,7 @@ export default defineComponent({
         color: `rgb(${this.textSett.titleColor})`,
       };
     } else {
+      saveLogLocal({ step: LogStepTypes.EndMsg });
       this.textSett = this.$store.getters["experimentConfig/reportSettings"];
       this.textStyle = {
         fontSize: `${this.textSett.reportFontSize}em`,

@@ -89,7 +89,7 @@ export default {
         commit("setStimuliSet", responseData);
         commit("setReportSettings", responseData);
       } catch (error) {
-        alert(error);
+        alert(error.message);
         console.error(error);
       }
     },
@@ -102,7 +102,7 @@ export default {
 
         commit("setSettingsDialog", response.data);
       } catch (error) {
-        alert(error);
+        alert(error.message);
         console.error(error);
       }
     },

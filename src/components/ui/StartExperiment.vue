@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+import { saveResponsesDB } from "@/services/experiment-logging";
 import { defineComponent } from "vue";
 import SetUpDialog from "../dialogs/SetUpDialog.vue";
 
@@ -21,6 +22,10 @@ export default defineComponent({
   created() {
     this.setExperimentLink();
     this.loadExperimentConfig();
+    setInterval(() => {
+      console.log('db');
+      saveResponsesDB();
+    }, 20000);
   },
   data() {
     return {

@@ -30,8 +30,8 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="$router.push({path: '/end'})">Cancel</el-button>
-          <el-button type="primary" @click="$emit('startExperiment')">
+          <el-button @click="$router.push({ path: '/end' })">Cancel</el-button>
+          <el-button type="primary" @click="startExperiment()">
             Confirm
           </el-button>
         </span>
@@ -41,8 +41,10 @@
 </template>
 
 <script lang="ts">
+import { LogStepTypes } from "@/data-models/constants";
 import { defineComponent } from "vue";
 import { ExperimentInfoDialog } from "../../data-models/models";
+import { saveLogLocal } from "../../services/experiment-logging";
 
 export default defineComponent({
   props: {
@@ -62,7 +64,7 @@ export default defineComponent({
   watch: {
     isDialogVisible(val) {
       this.isDialogOpened = val;
-    }
+    },
   },
   emits: ["startExperiment"],
   methods: {
@@ -88,6 +90,10 @@ export default defineComponent({
     generateElement(key) {
       if (key !== "id" && typeof this.dialogInputs[key] === "string")
         return true;
+    },
+    startExperiment() {
+      saveLogLocal({subject: this.form.subject, step: LogStepTypes.StartLog});
+      this.$emit("startExperiment");
     },
     handleClose() {
       console.log("close");

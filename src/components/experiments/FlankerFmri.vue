@@ -15,7 +15,7 @@
 /* eslint-disable no-unused-vars */
 
 import { ExpEnvSettings, ExperimentTimes } from "@/data-models/models";
-import { experimentSteps, StepTypes } from "@/data-models/constants";
+import { experimentSteps, LogStepTypes, StepTypes } from "@/data-models/constants";
 import { defineComponent } from "vue";
 import BaseInstructions from "../ui/BaseInstructions.vue";
 import BaseFixation from "../ui/BaseFixation.vue";
@@ -32,6 +32,7 @@ import {
   take,
   tap,
 } from "rxjs";
+import { saveLogLocal } from "@/services/experiment-logging";
 
 interface FlankerStimulus {
   text: string;
@@ -78,6 +79,7 @@ export default defineComponent({
         switch (this.currentStep) {
           case StepTypes.Instructions: {
             this.currentStep = StepTypes.FixationRest;
+            saveLogLocal({ step: LogStepTypes.Fixation});
             let timeout = timer(this.experimentTimes.initial * 1000) // TODO use data from BE
               .pipe(take(1))
               .subscribe(() => {
@@ -129,6 +131,7 @@ export default defineComponent({
       console.log(this.experimentEnvSettings);
     },
     startExperiment() {
+      saveLogLocal({ step: LogStepTypes.StartedExp});
       this.setFixation(false, StepTypes.FixationTask);
       const startExp = timer(this.fixationTaskTime)
         .pipe(take(1))

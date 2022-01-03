@@ -6,6 +6,16 @@ export enum StepTypes {
   End = "end",
 }
 
+export enum LogStepTypes {
+  StartLog = "# Starting logging",
+  Instructions = "# Showing instructions",
+  Fixation = "# Showing fixation",
+  StartedExp = "# Experiment started",
+  EndedPrel = "# Script ended preliminary via the q key",
+  EndMsg = "# End message shown",
+  EndingExp = "# Ending experiment"
+}
+
 export const experimentSteps = {
   instructions: {
     step: "instructions",

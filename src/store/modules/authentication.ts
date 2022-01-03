@@ -37,7 +37,7 @@ export default {
         context.commit("setLoggedUser", { user, jwt });
         router.push("/admin-home");
       } catch (e) {
-        alert(e);
+        alert(e.message);
         console.error(e);
       }
     },
