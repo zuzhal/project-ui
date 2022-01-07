@@ -22,16 +22,20 @@ export default defineComponent({
   created() {
     this.setExperimentLink();
     this.loadExperimentConfig();
-    setInterval(() => {
-      console.log('db');
+    this.interval = setInterval(() => {
+      console.log('saving to DB');
       saveResponsesDB();
-    }, 20000);
+    }, 10000);
+  },
+  unmounted() {
+    this.interval.clearInterval();
   },
   data() {
     return {
       isExperimentOn: false,
       experimentLink: "",
       isDialogVisible: true,
+      interval: null,
     };
   },
   methods: {

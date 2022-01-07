@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "./components/views/Home.vue";
 import NotFound from "./components/views/NotFound.vue";
-import StartExperiment from "./components/ui/StartExperiment.vue";
+import StartExperiment from "./components/views/StartExperiment.vue";
 import Login from "./components/views/Login.vue";
 import store from "./store/index";
 

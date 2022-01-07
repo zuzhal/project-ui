@@ -62,3 +62,17 @@ export function* getItemsFrom(l, shuffle = true, last = null) {
     yield i;
   }
 }
+
+// Returns current time
+export function now() {
+  return new Date().getTime();
+}
+
+// Returns time elapsed since `beginning`
+export function elapsed(beginning, log = false) {
+  const duration = new Date().getTime() - beginning;
+  if (log) {
+    console.log(`${beginning}, ${duration / 1000}s`);
+  }
+  return duration / 1000;
+}

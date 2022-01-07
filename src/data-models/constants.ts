@@ -38,3 +38,8 @@ export const experimentSteps = {
     component: "base-instructions",
   },
 };
+
+export const responseMapKeyBoardFlanker = {
+  ArrowLeft: "left",
+  ArrowRight: "right",
+}

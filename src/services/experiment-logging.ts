@@ -6,7 +6,7 @@ import store from "../store/index";
 const API_URL = "http://localhost:1337/";
 const uninterceptedAxiosInstance = axios.create();
 
-//localstorage[‘kľúč+timestamp’] = event?
+//localstorage[‘key+timestamp’] = event
 export function saveLogLocal(args: any) {
   const time = DateTime.local({ locale: "sl" }).toISO();
   const guid = store.getters["experiments/guid"];
@@ -20,11 +20,11 @@ export function saveLogLocal(args: any) {
     if (args.step == LogStepTypes.StartLog) {
       data = `${LogStepTypes.StartLog} for subject ${args.subject} at ${timeFormatted}`;
     } else {
-      data = `${LogStepTypes.StartLog} ${timeFormatted}`;
+      data = `${args.step} ${timeFormatted}`;
     }
     setLocalStorageItem(key, data, time, guid, experiment);
   } else {
-    setLocalStorageItem(key, args.data, time, guid, experiment);
+    setLocalStorageItem(key, args, time, guid, experiment);
   }
 }
 
