@@ -79,7 +79,7 @@ export default defineComponent({
       onExpFinish$: new Subject(),
       fixationTaskTime: 2000,
       experimentStarted: null,
-      stimulusTime: null,
+      stimulusTime: { difference: null, exactTime: null },
       reactionTime: null,
     };
   },
@@ -109,7 +109,7 @@ export default defineComponent({
               this.ItiTimesGenerator[this.stimulus.code].next().value;
             if (event instanceof KeyboardEvent) {
               // if a key was pressed
-              reactionTime = elapsed(this.stimulusTime, true);
+              reactionTime = elapsed(this.stimulusTime.exactTime);
               response = event.key;
               correct =
                 responseMapKeyBoardFlanker[response] == this.stimulus.direction
@@ -126,7 +126,7 @@ export default defineComponent({
               ITI: fixationTime,
               response,
               correct,
-              stimulusTime: this.stimulusTime,
+              stimulusTime: this.stimulusTime.difference,
               reactionTime,
             });
             if (fixationTime < 2) {
@@ -245,7 +245,10 @@ export default defineComponent({
     },
     showStimulus() {
       this.currentStep = StepTypes.Stimulus;
-      this.stimulusTime = elapsed(this.experimentStarted);
+      this.stimulusTime = {
+        difference: elapsed(this.experimentStarted),
+        exactTime: now(),
+      };
     },
   },
   computed: {
