@@ -93,7 +93,7 @@ export default defineComponent({
           case StepTypes.Instructions: {
             this.currentStep = StepTypes.FixationRest;
             saveLogLocal({ step: LogStepTypes.Fixation });
-            let timeout = timer(this.experimentTimes.initial * 1000) // TODO use data from BE
+            timer(this.experimentTimes.initial * 1000) // TODO use data from BE
               .pipe(take(1))
               .subscribe(() => {
                 this.startExperiment();
@@ -132,7 +132,7 @@ export default defineComponent({
             if (fixationTime < 2) {
               fixationTime = 1.5; // TODO toto tu nema co robit
             }
-            const fixationTimer = timer(fixationTime * 1000)
+            timer(fixationTime * 1000)
               .pipe(take(1), tap(this.setNextStimulusInfo()))
               .subscribe(() => {
                 if (this.nTasksCounter == this.nTasks) {
@@ -164,13 +164,12 @@ export default defineComponent({
         this.$store.getters["experimentConfig/stimuliSet"]
       );
       this.ItiTimesGenerator = this.setItiTimesGenerator();
-      console.log(this.experimentEnvSettings);
     },
     startExperiment() {
       this.experimentStarted = now();
       saveLogLocal({ step: LogStepTypes.StartedExp });
       this.setFixation(false, StepTypes.FixationTask);
-      const startExp = timer(this.fixationTaskTime)
+      timer(this.fixationTaskTime)
         .pipe(take(1))
         .subscribe(() => {
           this.setNextStimulusInfo();
