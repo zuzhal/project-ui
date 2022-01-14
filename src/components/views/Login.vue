@@ -51,9 +51,9 @@ export default defineComponent({
       rules: {
         username: [
           {
-            required: true,
+            /* required: true,
             message: "Username is required",
-            trigger: "blur",
+            trigger: "blur", */
           },
         ],
         password: [

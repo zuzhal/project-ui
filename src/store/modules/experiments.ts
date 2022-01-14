@@ -9,7 +9,8 @@ export default {
     return {
       experiments: {} as Experiments,
       experiment: {} as any,
-      guid: '',
+      experimentsWithLogs: {} as any,
+      guid: "",
     };
   },
 
@@ -20,9 +21,13 @@ export default {
     setExperiment(state, payload) {
       state.experiment = payload.data[0];
     },
-    setGuid(state) { // set at the beggining of an experiment
+    setExperimentsWithLogs(state, payload) {
+      state.experimentsWithLogs = payload.data.data.generalLogsConnection.groupBy.experiment;
+    },
+    setGuid(state) {
+      // set at the beggining of an experiment
       state.guid = Math.random().toString(36).substring(2, 9);
-    }
+    },
   },
   actions: {
     async loadExperiments({ commit }) {
@@ -36,9 +41,7 @@ export default {
     },
     loadExperiment(context, experimentLink) {
       return axios
-        .get(
-          `${API_URL}experiments?[experimentLink]$eq=${experimentLink}`
-        )
+        .get(`${API_URL}experiments?[experimentLink]$eq=${experimentLink}`)
         .catch((error) => {
           alert(error.message);
           console.error(error);
@@ -52,6 +55,38 @@ export default {
         const response = await axios.put(`${API_URL}experiments/${id}`, {
           active,
         });
+        context.commit("setExperimentsWithLogs", response);
+      } catch (error) {
+        alert(error.message);
+        console.error(error);
+      }
+    },
+    async getGroupedGuidByExperiment(context) {
+      try {
+        const response = await axios({
+          url: `${API_URL}graphql`,
+          method: "post",
+          data: { // generalLogsConnection(where: { experiment: "${name}" })
+            query: `
+              query getGroupedGuidByExperiment {
+                generalLogsConnection { 
+                  groupBy {
+                    experiment {
+                      key
+                      connection {
+                        groupBy {
+                          guid {
+                            key
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }`,
+          },
+        })
+        context.commit("setExperimentsWithLogs", response);
       } catch (error) {
         alert(error.message);
         console.error(error);
@@ -67,6 +102,9 @@ export default {
     },
     guid(state) {
       return state.guid;
+    },
+    experimentsWithLogs(state) {
+      return state.experimentsWithLogs;
     }
   },
 };
