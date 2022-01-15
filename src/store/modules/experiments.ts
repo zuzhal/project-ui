@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Experiments } from "../../data-models/models";
-
+const jsonToTxt = require("json-to-txt");
 const API_URL = "http://localhost:1337/";
 
 export default {
@@ -11,6 +11,7 @@ export default {
       experiment: {} as any,
       experimentsWithLogs: {} as any,
       guid: "",
+      subject: "",
     };
   },
 
@@ -22,12 +23,16 @@ export default {
       state.experiment = payload.data[0];
     },
     setExperimentsWithLogs(state, payload) {
-      state.experimentsWithLogs = payload.data.data.generalLogsConnection.groupBy.experiment;
+      state.experimentsWithLogs =
+        payload.data.data.experimentSubjectListsConnection.groupBy.experiment;
     },
     setGuid(state) {
       // set at the beggining of an experiment
       state.guid = Math.random().toString(36).substring(2, 9);
     },
+    setSubject(state, payload) {
+      state.subject = payload;
+    }
   },
   actions: {
     async loadExperiments({ commit }) {
@@ -36,6 +41,36 @@ export default {
         commit("setExperiments", response.data);
       } catch (error) {
         alert(error.message);
+        console.error(error);
+      }
+    },
+    async loadExperimentLogs(commit, { name, guid, subject }) {
+      try {
+        const response = await axios({
+          url: `${API_URL}graphql`,
+          method: "post",
+          data: {
+            query: `query getLogs {
+              generalLogs(
+                where: { experiment: "${name}", guid: "${guid}", subject: "${subject}" },
+                sort :"dateTime"
+              ) {
+                data
+              }
+            }`,
+          },
+        });
+        const dataInString = jsonToTxt({
+          data: response.data.data.generalLogs,
+        });
+        const blob = new Blob([dataInString], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${name}_${subject}_${guid}_logs.txt`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+      } catch (error) {
+        alert(error);
         console.error(error);
       }
     },
@@ -55,37 +90,36 @@ export default {
         const response = await axios.put(`${API_URL}experiments/${id}`, {
           active,
         });
-        context.commit("setExperimentsWithLogs", response);
       } catch (error) {
         alert(error.message);
         console.error(error);
       }
     },
-    async getGroupedGuidByExperiment(context) {
+    async getExperimentSubjectList(context) {
       try {
         const response = await axios({
           url: `${API_URL}graphql`,
           method: "post",
-          data: { // generalLogsConnection(where: { experiment: "${name}" })
-            query: `
-              query getGroupedGuidByExperiment {
-                generalLogsConnection { 
-                  groupBy {
-                    experiment {
-                      key
-                      connection {
-                        groupBy {
-                          guid {
-                            key
-                          }
-                        }
+          data: {
+            // generalLogsConnection(where: { experiment: "${name}" })
+            query: `query getExperimentSubjectList {
+              experimentSubjectListsConnection {
+                groupBy {
+                  experiment {
+                    key,
+                    connection {
+                      values {
+                        guid,
+                        dateTime,
+                        subject
                       }
                     }
                   }
                 }
-              }`,
+              }
+            }`,
           },
-        })
+        });
         context.commit("setExperimentsWithLogs", response);
       } catch (error) {
         alert(error.message);
@@ -105,6 +139,9 @@ export default {
     },
     experimentsWithLogs(state) {
       return state.experimentsWithLogs;
-    }
+    },
+    subject(state) {
+      return state.subject;
+    },
   },
 };

@@ -63,7 +63,7 @@ export default defineComponent({
     };
   },
   methods: {
-    /* loadExperiments() {
+    loadExperiments() {
       this.$store
         .dispatch("experiments/loadExperiments")
         .then(() => {
@@ -73,7 +73,7 @@ export default defineComponent({
         .catch((error) => {
           console.log(error);
         });
-    }, */
+    },
     setStatus(active: boolean, id) {
       this.$store
         .dispatch("experiments/setStatus", { active, id })

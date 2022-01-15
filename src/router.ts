@@ -21,7 +21,7 @@ const router = createRouter({
           .dispatch("experiments/loadExperiments", to.params.link)
           .then(() => {
             store
-              .dispatch("experiments/getGroupedGuidByExperiment")
+              .dispatch("experiments/getExperimentSubjectList")
               .then(() => next());
           });
       },

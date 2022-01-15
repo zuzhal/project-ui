@@ -112,8 +112,9 @@ export interface FlankerResponse {
   trial: number;
 }
 
-export interface ExperimentLog {
-  info: LogInfo;
-  stepInfo: Step;
-  response?: FlankerResponse;
+export interface ExperimentSubjectList {
+  subject: string;
+  experiment: string;
+  guid: string;
 }
+

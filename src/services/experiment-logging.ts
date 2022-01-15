@@ -9,28 +9,29 @@ const uninterceptedAxiosInstance = axios.create();
 //localstorage[‘key+timestamp’] = event
 export function saveLogLocal(args: any) {
   const time = DateTime.local({ locale: "sl" }).toISO();
-  const guid = store.getters["experiments/guid"];
   const timeFormatted = DateTime.fromISO(time).toLocaleString(
     DateTime.DATETIME_SHORT_WITH_SECONDS
   );
+  const guid = store.getters["experiments/guid"];
+  const subject = store.getters["experiments/subject"];
   const key = guid + time;
   const experiment = store.getters["experimentConfig/experimentName"];
   let data = "";
   if (args.step) {
     if (args.step == LogStepTypes.StartLog) {
-      data = `${LogStepTypes.StartLog} for subject ${args.subject} at ${timeFormatted}`;
+      data = `${LogStepTypes.StartLog} for subject ${subject} at ${timeFormatted}`;
+      setExperimentSubjectList(guid, experiment, subject);
     } else {
       data = `${args.step} ${timeFormatted}`;
     }
-    setLocalStorageItem(key, data, time, guid, experiment);
+    setLocalStorageItem(key, data, time, guid, experiment, subject);
   } else {
-    setLocalStorageItem(key, args, time, guid, experiment);
+    setLocalStorageItem(key, args, time, guid, experiment, subject);
   }
 }
 
 export function saveResponsesDB() {
   const keys = Object.keys(localStorage);
-  console.log('saveResp');
   keys.forEach((key) => {
     const item = localStorage.getItem(key);
     if (isJSON(item)) {
@@ -49,16 +50,30 @@ export function saveResponsesDB() {
   });
 }
 
-function setLocalStorageItem(key, data, dateTime, guid, experiment) {
+function setLocalStorageItem(key, data, dateTime, guid, experiment, subject) {
   localStorage.setItem(
     key,
     JSON.stringify({
-      data: data,
-      dateTime: dateTime,
-      guid: guid,
-      experiment: experiment,
+      data,
+      dateTime,
+      guid,
+      experiment,
+      subject
     })
   );
+}
+
+function setExperimentSubjectList(guid, experiment, subject) {
+  const time = DateTime.local({ locale: "sl" }).toISO();
+  const requestObj = { guid, experiment, subject, dateTime: time };
+  const response = uninterceptedAxiosInstance
+    .post(API_URL + "experiment-subject-lists", requestObj)
+    .then((response) => {
+      if (response.status !== 200) {
+        alert(response.statusText);
+        console.error(response);
+      }
+    });
 }
 
 function isJSON(str) {

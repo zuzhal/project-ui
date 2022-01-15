@@ -92,7 +92,8 @@ export default defineComponent({
         return true;
     },
     startExperiment() {
-      saveLogLocal({subject: this.form.subject, step: LogStepTypes.StartLog});
+      this.$store.commit("experiments/setSubject", this.form.subject)
+      saveLogLocal({step: LogStepTypes.StartLog});
       this.$emit("startExperiment");
     },
     handleClose() {
