@@ -68,7 +68,6 @@ export default defineComponent({
         .dispatch("experiments/loadExperiments")
         .then(() => {
           this.experiments = this.$store.getters["experiments/experiments"];
-          // console.log(this.experiments);
         })
         .catch((error) => {
           console.log(error);

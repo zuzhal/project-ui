@@ -6,11 +6,11 @@
         class="login-form"
         :model="model"
         :rules="rules"
-        ref="form"
-        @submit.prevent="login"
+        ref="formEl"
+        @submit.prevent="submitForm(formEl)"
       >
         <el-form-item prop="username">
-          <el-input v-model="model.email" placeholder="Username"></el-input>
+          <el-input v-model="model.username" placeholder="Username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input
@@ -29,50 +29,58 @@
             >Login</el-button
           >
         </el-form-item>
-        <a class="forgot-password" href="https://oxfordinformatics.com/"
+        <!--  <a class="forgot-password" href="https://oxfordinformatics.com/"
           >Forgot password ?</a
-        >
+        > -->
       </el-form>
     </el-card>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
+import type { ElForm } from "element-plus";
+import { useStore } from "vuex";
 
-export default defineComponent({
-  data() {
-    return {
-      model: {
-        email: "",
-        password: "",
-      },
-      loading: false,
-      rules: {
-        username: [
-          {
-            /* required: true,
-            message: "Username is required",
-            trigger: "blur", */
-          },
-        ],
-        password: [
-          { required: true, message: "Password is required", trigger: "blur" },
-          {
-            min: 5,
-            message: "Password length should be at least 5 characters",
-            trigger: "blur",
-          },
-        ],
-      },
-    };
-  },
-  methods: {
-    login() {
-      this.$store.dispatch("authentication/login", this.model);
-    },
-  },
+const store = useStore()
+const formEl = ref<InstanceType<typeof ElForm>>()
+const loading = ref(false);
+const model = reactive({
+  username: "",
+  password: "",
 });
+const rules = reactive({
+  username: [
+    {
+      required: true,
+      message: "Username is required",
+      trigger: "blur",
+    },
+  ],
+  password: [
+    { required: true, message: "Password is required", trigger: "blur" },
+    {
+      min: 5,
+      message: "Password length should be at least 5 characters",
+      trigger: "blur",
+    },
+  ],
+});
+
+function login() {
+  store.dispatch("authentication/login", model);
+}
+function submitForm(formEl: InstanceType<typeof ElForm> | undefined) {
+  if (!formEl) return;
+  formEl.validate((valid) => {
+    if (valid) {
+      login();
+    } else {
+      console.log("error submit!");
+      return false;
+    }
+  });
+}
 </script>
 
 <style lang="scss">

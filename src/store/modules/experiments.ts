@@ -32,7 +32,7 @@ export default {
     },
     setSubject(state, payload) {
       state.subject = payload;
-    }
+    },
   },
   actions: {
     async loadExperiments({ commit }) {
@@ -40,8 +40,8 @@ export default {
         const response = await axios.get(API_URL + "experiments");
         commit("setExperiments", response.data);
       } catch (error) {
-        alert(error.message);
         console.error(error);
+        alert(error.message);
       }
     },
     async loadExperimentLogs(commit, { name, guid, subject }) {
@@ -60,6 +60,9 @@ export default {
             }`,
           },
         });
+        if (response.data.data.generalLogs.length == 0) {
+          throw new Error("Empty logs for this experiment run");
+        }
         const dataInString = jsonToTxt({
           data: response.data.data.generalLogs,
         });
@@ -70,16 +73,16 @@ export default {
         link.click();
         URL.revokeObjectURL(link.href);
       } catch (error) {
-        alert(error);
         console.error(error);
+        alert(error);
       }
     },
     loadExperiment(context, experimentLink) {
       return axios
         .get(`${API_URL}experiments?[experimentLink]$eq=${experimentLink}`)
         .catch((error) => {
-          alert(error.message);
           console.error(error);
+          alert(error.message);
         })
         .then((resp) => {
           context.commit("setExperiment", resp);
@@ -91,8 +94,8 @@ export default {
           active,
         });
       } catch (error) {
-        alert(error.message);
         console.error(error);
+        alert(error.message);
       }
     },
     async getExperimentSubjectList(context) {
@@ -122,8 +125,8 @@ export default {
         });
         context.commit("setExperimentsWithLogs", response);
       } catch (error) {
-        alert(error.message);
         console.error(error);
+        alert(error.message);
       }
     },
   },

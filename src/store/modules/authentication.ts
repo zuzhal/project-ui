@@ -23,10 +23,10 @@ export default {
     },
   },
   actions: {
-    async login(context, { email, password }) {
+    async login(context, { username, password }) {
       try {
         const requestOptions = {
-            identifier: email,
+            identifier: username,
             password: password,
         };
         const response = await axios.post(
@@ -37,8 +37,8 @@ export default {
         context.commit("setLoggedUser", { user, jwt });
         router.push("/admin-home");
       } catch (e) {
-        alert(e.message);
         console.error(e);
+        alert(e.message);
       }
     },
   },

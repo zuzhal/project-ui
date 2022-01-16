@@ -40,8 +40,8 @@ export function saveResponsesDB() {
         .post(API_URL + "general-logs", requestObj)
         .then((response) => {
           if (response.status !== 200) {
-            alert(response.statusText);
             console.error(response);
+            alert(response.statusText);
           } else {
             localStorage.removeItem(key);
           }
@@ -70,8 +70,8 @@ function setExperimentSubjectList(guid, experiment, subject) {
     .post(API_URL + "experiment-subject-lists", requestObj)
     .then((response) => {
       if (response.status !== 200) {
-        alert(response.statusText);
         console.error(response);
+        alert(response.statusText);
       }
     });
 }

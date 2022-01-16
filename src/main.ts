@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSignOutAlt, faAt, faUser, faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faAt, faUser, faCheckCircle, faTimesCircle, faDownload } from "@fortawesome/free-solid-svg-icons";
 
 import BaseCard from "./components/ui/BaseCard.vue";
 import BaseInstructions from "./components/ui/BaseInstructions.vue";
@@ -24,7 +24,7 @@ import VueFullscreen from "vue-fullscreen";
 
 import axios from "axios";
 
-library.add(faSignOutAlt, faUser, faAt, faCheckCircle, faTimesCircle);
+library.add(faSignOutAlt, faUser, faAt, faCheckCircle, faTimesCircle, faDownload);
 
 const app = createApp(App);
 app.config.globalProperties.axios = axios;
