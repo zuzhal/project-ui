@@ -48,14 +48,6 @@ export default defineComponent({
       this.isDialogVisible = false;
       this.isExperimentOn = true;
     },
-    loadExperimentConfig() {
-      this.$store
-        .dispatch("experimentConfig/loadExpSettings")
-        .then(() => {})
-        .catch((error) => {
-          console.log(error);
-        });
-    },
   },
 });
 </script>
