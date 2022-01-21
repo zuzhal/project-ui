@@ -54,7 +54,7 @@ export default defineComponent({
     BaseButton,
   },
   created() {
-    this.loadExperiments();
+    this.experiments = this.$store.getters["experiments/experiments"];
   },
   data() {
     return {
@@ -68,7 +68,6 @@ export default defineComponent({
         .dispatch("experiments/loadExperiments")
         .then(() => {
           this.experiments = this.$store.getters["experiments/experiments"];
-          // console.log(this.experiments);
         })
         .catch((error) => {
           console.log(error);

@@ -1,6 +1,6 @@
 <template>
   <loader></loader>
-  <the-header v-if="loggedIn()"></the-header>
+  <the-header v-if="loggedIn"></the-header>
   <div class="container" id="app">
     <router-view v-slot="slotProps">
       <component :is="slotProps.Component"></component>
@@ -21,12 +21,22 @@ export default defineComponent({
     Home,
     Loader,
   },
-  methods: {
+  data() {
+    return {
+      isLoggedIn: false,
+    }
+  },
+  computed: {
     loggedIn() {
-      const isLoggedIn = this.$store.getters["authentication/isAuthenticated"];
-      return isLoggedIn;
+      console.log(this.isLoggedIn);
+      return this.isLoggedIn;
     },
   },
+  watch: {
+  '$store.state.authentication.loggedUser': function() {
+    this.isLoggedIn = this.$store.getters["authentication/isAuthenticated"];
+  },
+}
 });
 </script>
 

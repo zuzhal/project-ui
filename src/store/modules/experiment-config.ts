@@ -5,8 +5,8 @@ import {
   Instructions,
   ReportSettings,
   StimulusSettings,
-} from "../../../data-models/models";
-import { flattenObject } from "../../../utils/helpers";
+} from "../../data-models/models";
+import { flattenObject } from "../../utils/helpers";
 
 const API_URL = "http://localhost:1337/";
 
@@ -89,8 +89,8 @@ export default {
         commit("setStimuliSet", responseData);
         commit("setReportSettings", responseData);
       } catch (error) {
-        alert(error);
         console.error(error);
+        alert(error.message);
       }
     },
 
@@ -102,8 +102,8 @@ export default {
 
         commit("setSettingsDialog", response.data);
       } catch (error) {
-        alert(error);
         console.error(error);
+        alert(error.message);
       }
     },
   },

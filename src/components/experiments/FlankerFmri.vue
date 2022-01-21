@@ -4,7 +4,11 @@
   </button>
   <fullscreen v-model="isFullScreen">
     <div :style="bgColor">
-      <component :is="nextStepComponent" :isFixationRest="changeFixationType" :isEnd="isEnd">
+      <component
+        :is="nextStepComponent"
+        :isFixationRest="changeFixationType"
+        :isEnd="isEnd"
+      >
         {{ stimulusText }}
       </component>
     </div>
@@ -15,7 +19,12 @@
 /* eslint-disable no-unused-vars */
 
 import { ExpEnvSettings, ExperimentTimes } from "@/data-models/models";
-import { experimentSteps, StepTypes } from "@/data-models/constants";
+import {
+  experimentSteps,
+  LogStepTypes,
+  StepTypes,
+  responseMapKeyBoardFlanker,
+} from "@/data-models/constants";
 import { defineComponent } from "vue";
 import BaseInstructions from "../ui/BaseInstructions.vue";
 import BaseFixation from "../ui/BaseFixation.vue";
@@ -32,6 +41,8 @@ import {
   take,
   tap,
 } from "rxjs";
+import { saveLogLocal, saveResponsesDB } from "@/services/experiment-logging";
+import { now, elapsed } from "../../utils/helpers";
 
 interface FlankerStimulus {
   text: string;
@@ -56,29 +67,33 @@ export default defineComponent({
       isFixationRest: true,
       nBlocks: 2, // TODO from BE
       nTasks: 5,
-      nBlocksCopy: 2,
-      nTasksCopy: 5,
+      nBlocksCounter: 1,
+      nTasksCounter: 1,
       stimuliGenerator: null,
       stimulus: {} as FlankerStimulus,
       ItiTimesGenerator: {}, // TODO TR, safety, also from BE right now, its manually calculated and put in the database
       timer$: new Subject(),
       timesUp$: new Subject(),
       key$: fromEvent(window, "keyup"),
-      onDestroy: new Subject(),
-      onExpFinish: new Subject(),
+      onDestroy$: new Subject(),
+      onExpFinish$: new Subject(),
       fixationTaskTime: 2000,
+      experimentStarted: null,
+      stimulusTime: { difference: null, exactTime: null },
+      reactionTime: null,
     };
   },
   created() {
     this.getExperimentConfig();
 
     merge(this.timesUp$, this.key$)
-      .pipe(takeUntil(this.onExpFinish))
+      .pipe(takeUntil(this.onExpFinish$))
       .subscribe((event) => {
         switch (this.currentStep) {
           case StepTypes.Instructions: {
             this.currentStep = StepTypes.FixationRest;
-            let timeout = timer(this.experimentTimes.initial * 1000) // TODO use data from BE
+            saveLogLocal({ step: LogStepTypes.Fixation });
+            timer(this.experimentTimes.initial * 1000) // TODO use data from BE
               .pipe(take(1))
               .subscribe(() => {
                 this.startExperiment();
@@ -87,22 +102,44 @@ export default defineComponent({
           }
           case StepTypes.Stimulus: {
             this.currentStep = StepTypes.FixationTask;
+            let reactionTime = 0;
+            let response = "-";
+            let correct = "timeout";
             let fixationTime =
               this.ItiTimesGenerator[this.stimulus.code].next().value;
+            if (event instanceof KeyboardEvent) {
+              // if a key was pressed
+              reactionTime = elapsed(this.stimulusTime.exactTime);
+              response = event.key;
+              correct =
+                responseMapKeyBoardFlanker[response] == this.stimulus.direction
+                  ? "correct"
+                  : "incorrect";
+              this.resetTimerStimulus();
+            }
+            saveLogLocal({
+              block: this.nBlocksCounter,
+              trial: this.nTasksCounter,
+              code: this.stimulus.code,
+              direction: this.stimulus.direction,
+              congruency: this.stimulus.congurency,
+              ITI: fixationTime,
+              response,
+              correct,
+              stimulusTime: this.stimulusTime.difference,
+              reactionTime,
+            });
             if (fixationTime < 2) {
               fixationTime = 1.5; // TODO toto tu nema co robit
             }
-            if (event instanceof KeyboardEvent) {
-              this.resetTimerStimulus();
-            }
-            const fixationTimer = timer(fixationTime * 1000)
+            timer(fixationTime * 1000)
               .pipe(take(1), tap(this.setNextStimulusInfo()))
               .subscribe(() => {
-                if (this.nTasksCopy == 0) {
+                if (this.nTasksCounter == this.nTasks) {
                   this.resetTrialsForNextBlock();
                 } else {
-                  this.currentStep = StepTypes.Stimulus;
-                  this.nTasksCopy -= 1;
+                  this.showStimulus();
+                  this.nTasksCounter += 1;
                 }
               });
             break;
@@ -111,11 +148,12 @@ export default defineComponent({
       });
   },
   mounted() {
-    this.key$.pipe(takeUntil(this.onDestroy)).subscribe(() => {});
+    this.key$.pipe(takeUntil(this.onDestroy$)).subscribe(() => {});
   },
   unmounted() {
-    this.onDestroy.next();
-    this.onExpFinish.next();
+    saveResponsesDB();
+    this.onDestroy$.next();
+    this.onExpFinish$.next();
   },
   methods: {
     getExperimentConfig() {
@@ -126,15 +164,16 @@ export default defineComponent({
         this.$store.getters["experimentConfig/stimuliSet"]
       );
       this.ItiTimesGenerator = this.setItiTimesGenerator();
-      console.log(this.experimentEnvSettings);
     },
     startExperiment() {
+      this.experimentStarted = now();
+      saveLogLocal({ step: LogStepTypes.StartedExp });
       this.setFixation(false, StepTypes.FixationTask);
-      const startExp = timer(this.fixationTaskTime)
+      timer(this.fixationTaskTime)
         .pipe(take(1))
         .subscribe(() => {
           this.setNextStimulusInfo();
-          this.currentStep = StepTypes.Stimulus;
+          this.showStimulus();
           this.setStimulusTimer();
         });
     },
@@ -142,7 +181,7 @@ export default defineComponent({
       this.timer$
         .pipe(
           startWith(void 0),
-          takeUntil(this.onDestroy),
+          takeUntil(this.onDestroy$),
           switchMap((period: number) => interval(period || delay))
         )
         .subscribe(() => this.timesUp$.next("TIME"));
@@ -170,9 +209,9 @@ export default defineComponent({
     },
     resetTrialsForNextBlock() {
       this.setFixation(false, StepTypes.FixationTask);
-      this.nTasksCopy = this.nTasks;
-      this.nBlocksCopy -= 1;
-      if (this.nBlocksCopy == 0) {
+      this.nTasksCounter = 1;
+      this.nBlocksCounter += 1;
+      if (this.nBlocksCounter - 1 == this.nBlocks) {
         this.finishExperiment();
       } else {
         this.setNextStimulusInfo();
@@ -183,7 +222,7 @@ export default defineComponent({
             switchMap(() => timer(this.experimentTimes.rest * 100).pipe()),
             tap((_) => this.setFixation(false, StepTypes.FixationTask)),
             switchMap(() => timer(this.fixationTaskTime).pipe()),
-            tap((_) => (this.currentStep = StepTypes.Stimulus))
+            tap((_) => this.showStimulus())
           )
           .subscribe();
       }
@@ -201,7 +240,14 @@ export default defineComponent({
           ),
           tap((_) => (this.currentStep = StepTypes.End))
         )
-        .subscribe((_) => this.onExpFinish.next());
+        .subscribe((_) => this.onExpFinish$.next());
+    },
+    showStimulus() {
+      this.currentStep = StepTypes.Stimulus;
+      this.stimulusTime = {
+        difference: elapsed(this.experimentStarted),
+        exactTime: now(),
+      };
     },
   },
   computed: {

@@ -3,7 +3,7 @@
     :is-dialog-visible="isDialogVisible"
     @start-experiment="startExperiment"
   ></set-up-dialog>
-    <component v-if="isExperimentOn" :is="experimentLink"></component>
+  <component v-if="isExperimentOn" :is="experimentLink"></component>
 
   <!-- <fullscreen v-model="isExperimentOn">
   </fullscreen> -->
@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+import { saveResponsesDB } from "@/services/experiment-logging";
 import { defineComponent } from "vue";
 import SetUpDialog from "../dialogs/SetUpDialog.vue";
 
@@ -20,13 +21,22 @@ export default defineComponent({
   },
   created() {
     this.setExperimentLink();
-    this.loadExperimentConfig();
+    // this.loadExperimentConfig();
+    this.interval = setInterval(() => {
+      saveResponsesDB();
+    }, 10000);
+  },
+  unmounted() {
+    if (this.interval !== null) {
+      clearInterval(this.interval);
+    }
   },
   data() {
     return {
       isExperimentOn: false,
       experimentLink: "",
       isDialogVisible: true,
+      interval: null,
     };
   },
   methods: {
@@ -37,14 +47,6 @@ export default defineComponent({
     startExperiment() {
       this.isDialogVisible = false;
       this.isExperimentOn = true;
-    },
-    loadExperimentConfig() {
-      this.$store
-        .dispatch("experimentConfig/loadExpSettings")
-        .then(() => {})
-        .catch((error) => {
-          console.log(error);
-        });
     },
   },
 });

@@ -15,19 +15,23 @@ export default {
 
   mutations: {
     setLoggedUser(state, payload) {
-      state.loggedUser = {
-        jwt: JSON.stringify(payload.jwt),
-        user: payload.user,
-      };
-      state.isAuthenticated = true;
+      if (payload.jwt) {
+        state.loggedUser = {
+          jwt: JSON.stringify(payload.jwt),
+          user: payload.user,
+        };
+        state.isAuthenticated = true;
+      } else {
+        state.loggedUser = payload;
+      }
     },
   },
   actions: {
-    async login(context, { email, password }) {
+    async login(context, { username, password }) {
       try {
         const requestOptions = {
-            identifier: email,
-            password: password,
+          identifier: username,
+          password: password,
         };
         const response = await axios.post(
           API_URL + "auth/local",
@@ -37,8 +41,8 @@ export default {
         context.commit("setLoggedUser", { user, jwt });
         router.push("/admin-home");
       } catch (e) {
-        alert(e);
         console.error(e);
+        alert(e.message);
       }
     },
   },
@@ -48,6 +52,6 @@ export default {
     },
     isAuthenticated(state) {
       return state.isAuthenticated;
-    }
+    },
   },
 };
