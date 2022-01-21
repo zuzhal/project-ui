@@ -118,11 +118,12 @@ export default defineComponent({
               this.resetTimerStimulus();
             }
             saveLogLocal({
+              text: '',
               block: this.nBlocksCounter,
               trial: this.nTasksCounter,
               code: this.stimulus.code,
               direction: this.stimulus.direction,
-              congruency: this.stimulus.congurency,
+              congruency: this.stimulus.congruency,
               ITI: fixationTime,
               response,
               correct,
@@ -160,7 +161,7 @@ export default defineComponent({
       this.experimentEnvSettings =
         this.$store.getters["experimentConfig/experimentEnvSettings"];
       this.nBlocks = this.experimentEnvSettings.blocks;
-      this.nTrials = this.experimentEnvSettings.trials;
+      this.nTasks = this.experimentEnvSettings.trials;
       this.experimentTimes = this.experimentEnvSettings.times;
       this.stimuliGenerator = getItemsFrom(
         this.$store.getters["experimentConfig/stimuliSet"]

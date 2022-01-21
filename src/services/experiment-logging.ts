@@ -16,13 +16,25 @@ export function saveLogLocal(args: any) {
   const subject = store.getters["experiments/subject"];
   const key = guid + time;
   const experiment = store.getters["experimentConfig/experimentName"];
-  let data = "";
   if (args.step) {
+    const data = {
+      text: "",
+      block: "",
+      trial: "",
+      code: "",
+      direction: "",
+      congruency: "",
+      ITI: "",
+      response: "",
+      correct: "",
+      stimulusTime: "",
+      reactionTime: "",
+    }; // all the params have to be there because of the jsonToTxt library
     if (args.step == LogStepTypes.StartLog) {
-      data = `${LogStepTypes.StartLog} for subject ${subject} at ${timeFormatted}`;
+      data.text = `${LogStepTypes.StartLog} for subject ${subject} at ${timeFormatted}`;
       setExperimentSubjectList(guid, experiment, subject);
     } else {
-      data = `${args.step} ${timeFormatted}`;
+      data.text = `${args.step} ${timeFormatted}`;
     }
     setLocalStorageItem(key, data, time, guid, experiment, subject);
   } else {
@@ -58,7 +70,7 @@ function setLocalStorageItem(key, data, dateTime, guid, experiment, subject) {
       dateTime,
       guid,
       experiment,
-      subject
+      subject,
     })
   );
 }
