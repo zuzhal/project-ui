@@ -21,7 +21,7 @@ export default defineComponent({
   },
   created() {
     this.setExperimentLink();
-    this.loadExperimentConfig();
+    // this.loadExperimentConfig();
     this.interval = setInterval(() => {
       saveResponsesDB();
     }, 10000);

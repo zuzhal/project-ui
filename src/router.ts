@@ -42,7 +42,7 @@ const router = createRouter({
                 "experimentConfig/setExperimentName",
                 to.params.link
               );
-              next();
+              loadExperimentConfig(next);
             } else {
               alert("Experiment is inactive");
             }
@@ -61,5 +61,15 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+function loadExperimentConfig(next) {
+  store
+    .dispatch("experimentConfig/loadExpSettings")
+    .then(() => next())
+    .catch((error) => {
+      console.log(error);
+      alert(error);
+    });
+}
 
 export default router;
