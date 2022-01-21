@@ -1,3 +1,4 @@
+import { flattenObjectsInArray } from "@/utils/helpers";
 import axios from "axios";
 import { Experiments } from "../../data-models/models";
 const jsonToTxt = require("json-to-txt");
@@ -63,8 +64,9 @@ export default {
         if (response.data.data.generalLogs.length == 0) {
           throw new Error("Empty logs for this experiment run");
         }
+        const flatten = flattenObjectsInArray(response.data.data.generalLogs);
         const dataInString = jsonToTxt({
-          data: response.data.data.generalLogs,
+          data: flatten,
         });
         const blob = new Blob([dataInString], { type: "text/plain" });
         const link = document.createElement("a");
