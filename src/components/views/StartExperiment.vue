@@ -3,7 +3,7 @@
     :is-dialog-visible="isDialogVisible"
     @start-experiment="startExperiment"
   ></set-up-dialog>
-    <component v-if="isExperimentOn" :is="experimentLink"></component>
+  <component v-if="isExperimentOn" :is="experimentLink"></component>
 
   <!-- <fullscreen v-model="isExperimentOn">
   </fullscreen> -->
@@ -23,12 +23,13 @@ export default defineComponent({
     this.setExperimentLink();
     this.loadExperimentConfig();
     this.interval = setInterval(() => {
-      console.log('saving to DB');
       saveResponsesDB();
     }, 10000);
   },
   unmounted() {
-    this.interval.clearInterval();
+    if (this.interval !== null) {
+      clearInterval(this.interval);
+    }
   },
   data() {
     return {

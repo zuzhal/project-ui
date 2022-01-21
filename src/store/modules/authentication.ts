@@ -15,19 +15,23 @@ export default {
 
   mutations: {
     setLoggedUser(state, payload) {
-      state.loggedUser = {
-        jwt: JSON.stringify(payload.jwt),
-        user: payload.user,
-      };
-      state.isAuthenticated = true;
+      if (payload.jwt) {
+        state.loggedUser = {
+          jwt: JSON.stringify(payload.jwt),
+          user: payload.user,
+        };
+        state.isAuthenticated = true;
+      } else {
+        state.loggedUser = payload;
+      }
     },
   },
   actions: {
     async login(context, { username, password }) {
       try {
         const requestOptions = {
-            identifier: username,
-            password: password,
+          identifier: username,
+          password: password,
         };
         const response = await axios.post(
           API_URL + "auth/local",
@@ -48,6 +52,6 @@ export default {
     },
     isAuthenticated(state) {
       return state.isAuthenticated;
-    }
+    },
   },
 };
