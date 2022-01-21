@@ -65,8 +65,8 @@ export default defineComponent({
       experimentSteps: experimentSteps,
       currentStep: StepTypes.Instructions,
       isFixationRest: true,
-      nBlocks: 2, // TODO from BE
-      nTasks: 5,
+      nBlocks: null,
+      nTasks: null,
       nBlocksCounter: 1,
       nTasksCounter: 1,
       stimuliGenerator: null,
@@ -159,6 +159,8 @@ export default defineComponent({
     getExperimentConfig() {
       this.experimentEnvSettings =
         this.$store.getters["experimentConfig/experimentEnvSettings"];
+      this.nBlocks = this.experimentEnvSettings.blocks;
+      this.nTrials = this.experimentEnvSettings.trials;
       this.experimentTimes = this.experimentEnvSettings.times;
       this.stimuliGenerator = getItemsFrom(
         this.$store.getters["experimentConfig/stimuliSet"]

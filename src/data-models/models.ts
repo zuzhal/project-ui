@@ -28,6 +28,8 @@ export interface ExpEnvSettings {
   times: any; // json in strapi
   stimuliSet: any; // json in strapi
   ITISet: any; // json in strapi
+  blocks: number;
+  trials: number;
 }
 
 export interface ExperimentTimes {
