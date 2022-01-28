@@ -1,18 +1,13 @@
 <template>
-  <button class="mb-1 btn btn-primary" @click="isFullScreen = true">
-    FullScreen
-  </button>
-  <fullscreen v-model="isFullScreen">
-    <div :style="bgColor">
-      <component
-        :is="nextStepComponent"
-        :isFixationRest="changeFixationType"
-        :isEnd="isEnd"
-      >
-        {{ stimulusText }}
-      </component>
-    </div>
-  </fullscreen>
+  <div :style="bgColor">
+    <component
+      :is="nextStepComponent"
+      :isFixationRest="changeFixationType"
+      :isEnd="isEnd"
+    >
+      {{ stimulusText }}
+    </component>
+  </div>
 </template>
 
 <script lang="ts">
@@ -60,7 +55,6 @@ export default defineComponent({
     return {
       experimentEnvSettings: {} as ExpEnvSettings,
       experimentTimes: {} as ExperimentTimes,
-      isFullScreen: false,
       isEnd: false,
       experimentSteps: experimentSteps,
       currentStep: StepTypes.Instructions,
@@ -89,6 +83,15 @@ export default defineComponent({
     merge(this.timesUp$, this.key$)
       .pipe(takeUntil(this.onExpFinish$))
       .subscribe((event) => {
+        if (event instanceof KeyboardEvent) {
+          // ended preliminary
+          const response = event.key;
+          console.log(response);
+          if(response == "Escape" || response == "q" ) {
+            saveLogLocal({ step: LogStepTypes.EndedPrel });
+            this.$router.push("/notFound");
+          }
+        }
         switch (this.currentStep) {
           case StepTypes.Instructions: {
             this.currentStep = StepTypes.FixationRest;
@@ -118,7 +121,7 @@ export default defineComponent({
               this.resetTimerStimulus();
             }
             saveLogLocal({
-              text: '',
+              text: "",
               block: this.nBlocksCounter,
               trial: this.nTasksCounter,
               code: this.stimulus.code,

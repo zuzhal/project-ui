@@ -1,10 +1,12 @@
 <template>
-  <div class="container">
+  <div>
     <set-up-dialog
       :is-dialog-visible="isDialogVisible"
       @start-experiment="startExperiment"
     ></set-up-dialog>
-    <component v-if="isExperimentOn" :is="experimentLink"></component>
+    <fullscreen>
+      <component v-if="isExperimentOn" :is="experimentLink"></component>
+    </fullscreen>
   </div>
   <!-- <fullscreen v-model="isExperimentOn">
   </fullscreen> -->
@@ -48,6 +50,7 @@ export default defineComponent({
     startExperiment() {
       this.isDialogVisible = false;
       this.isExperimentOn = true;
+      this.$fullscreen.toggle()
     },
   },
 });

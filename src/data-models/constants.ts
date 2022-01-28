@@ -11,7 +11,7 @@ export enum LogStepTypes {
   Instructions = "# Showing instructions",
   Fixation = "# Showing fixation",
   StartedExp = "# Experiment started",
-  EndedPrel = "# Script ended preliminary via the q key",
+  EndedPrel = "# Script ended preliminary via the q/Esc key",
   EndMsg = "# End message shown",
   EndingExp = "# Ending experiment"
 }
