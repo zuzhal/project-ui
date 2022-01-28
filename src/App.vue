@@ -1,7 +1,6 @@
 <template>
   <loader></loader>
-  <the-header v-if="loggedIn"></the-header>
-  <div class="container" id="app">
+  <div id="app">
     <router-view v-slot="slotProps">
       <component :is="slotProps.Component"></component>
     </router-view>
@@ -10,33 +9,22 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import TheHeader from "./components/ui/TheHeader.vue";
+// import TheHeader from "./components/ui/TheHeader.vue";
 import Loader from "./components/ui/Loader.vue";
 import Home from "./components/views/Home.vue";
 
 export default defineComponent({
   name: "App",
   components: {
-    TheHeader,
+    // TheHeader,
     Home,
     Loader,
   },
   data() {
     return {
       isLoggedIn: false,
-    }
+    };
   },
-  computed: {
-    loggedIn() {
-      console.log(this.isLoggedIn);
-      return this.isLoggedIn;
-    },
-  },
-  watch: {
-  '$store.state.authentication.loggedUser': function() {
-    this.isLoggedIn = this.$store.getters["authentication/isAuthenticated"];
-  },
-}
 });
 </script>
 

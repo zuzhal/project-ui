@@ -1,10 +1,11 @@
 <template>
-  <set-up-dialog
-    :is-dialog-visible="isDialogVisible"
-    @start-experiment="startExperiment"
-  ></set-up-dialog>
-  <component v-if="isExperimentOn" :is="experimentLink"></component>
-
+  <div class="container">
+    <set-up-dialog
+      :is-dialog-visible="isDialogVisible"
+      @start-experiment="startExperiment"
+    ></set-up-dialog>
+    <component v-if="isExperimentOn" :is="experimentLink"></component>
+  </div>
   <!-- <fullscreen v-model="isExperimentOn">
   </fullscreen> -->
   <!-- <button class="mt-2 btn btn-primary" @click="isExperimentOn = !isExperimentOn">Turn on the experiment</button> -->
