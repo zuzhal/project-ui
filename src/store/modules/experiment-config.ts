@@ -8,7 +8,7 @@ import {
 } from "../../data-models/models";
 import { flattenObject } from "../../utils/helpers";
 
-const API_URL = "http://localhost:1337/";
+const API_URL = process.env.VUE_APP_ROOT_API;
 
 export default {
   namespaced: true,

@@ -2,7 +2,7 @@ import { flattenObjectsInArray } from "@/utils/helpers";
 import axios from "axios";
 import { Experiments } from "../../data-models/models";
 const jsonToTxt = require("json-to-txt");
-const API_URL = "http://localhost:1337/";
+const API_URL = process.env.VUE_APP_ROOT_API;
 
 export default {
   namespaced: true,

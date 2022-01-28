@@ -3,7 +3,7 @@ import axios from "axios";
 import { DateTime } from "luxon";
 import store from "../store/index";
 
-const API_URL = "http://localhost:1337/";
+const API_URL = process.env.VUE_APP_ROOT_API;
 const uninterceptedAxiosInstance = axios.create();
 
 //localstorage[‘key+timestamp’] = event
