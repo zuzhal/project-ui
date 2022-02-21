@@ -24,14 +24,17 @@ export default defineComponent({
   },
   created() {
     this.setExperimentLink();
-    // this.loadExperimentConfig();
+    /* to set interval for saving the logs every 10seconds to the database */
     this.interval = setInterval(() => {
       saveResponsesDB();
     }, 10000);
   },
   unmounted() {
+    /* interval has to be cleared, it would create a memory leak otherwise 
+    unmounted lifecycle is a good place for - when the component is destroyed
+    */
     if (this.interval !== null) {
-      clearInterval(this.interval);
+      clearInterval(this.interval); 
     }
   },
   data() {
@@ -44,13 +47,12 @@ export default defineComponent({
   },
   methods: {
     setExperimentLink() {
-      this.experimentLink =
-        this.$store.getters["experimentConfig/experimentName"];
+      this.experimentLink = this.$store.getters["experimentConfig/experimentName"];
     },
     startExperiment() {
       this.isDialogVisible = false;
       this.isExperimentOn = true;
-      this.$fullscreen.toggle()
+      this.$fullscreen.toggle();
     },
   },
 });

@@ -29,6 +29,11 @@ library.add(faSignOutAlt, faUser, faAt, faCheckCircle, faTimesCircle, faDownload
 const app = createApp(App);
 app.config.globalProperties.axios = axios;
 
+/* HTTP interceptor
+Everytime a http request is made 
+(except when running the experiment, it has its own axios instance without an interceptor),
+loader is dispatched => loading indicator has been shown to the user
+*/
 axios.interceptors.request.use(
   (config) => {
     store.dispatch("loader/pending");

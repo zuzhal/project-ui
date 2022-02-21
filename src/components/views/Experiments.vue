@@ -78,9 +78,6 @@ export default defineComponent({
         .dispatch("experiments/setStatus", { active, id })
         .then(() => this.loadExperiments());
     },
-    /* setDialogVisibility() {
-      this.isDialog = false;
-    } */
   },
 });
 </script>

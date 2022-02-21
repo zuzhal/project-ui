@@ -16,7 +16,7 @@ const router = createRouter({
       meta: {
         auth: true, // protected route
       },
-      beforeEnter: (to, from, next) => {
+      beforeEnter: (to, from, next) => { // router guard loading necessary data before entering the route
         store
           .dispatch("experiments/loadExperiments", to.params.link)
           .then(() => {
@@ -53,7 +53,7 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => { // global router guard
   const isLoggedIn = store.getters["authentication/isAuthenticated"];
   if (to.meta.auth && !isLoggedIn) {
     next("/login");
