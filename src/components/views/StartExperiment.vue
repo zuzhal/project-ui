@@ -30,8 +30,8 @@ export default defineComponent({
     }, 10000);
   },
   unmounted() {
-    /* interval has to be cleared, it would create a memory leak otherwise 
-    unmounted lifecycle is a good place for - when the component is destroyed
+    /* interval has to be cleared, it would create a memory leak otherwise. 
+    unmounted lifecycle is a good place for this - when the component is destroyed
     */
     if (this.interval !== null) {
       clearInterval(this.interval); 

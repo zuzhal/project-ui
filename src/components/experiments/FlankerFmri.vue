@@ -80,23 +80,30 @@ export default defineComponent({
   created() {
     this.getExperimentConfig();
 
+    /* https://rxjs.dev/api/index/function/merge 
+    listen for time pass and a pressed key
+    if ONE of the situations has happened, the code in the subscribtion is run.
+    */
     merge(this.timesUp$, this.key$)
       .pipe(takeUntil(this.onExpFinish$))
       .subscribe((event) => {
         if (event instanceof KeyboardEvent) {
-          // ended preliminary
+          //  ended preliminary
           const response = event.key;
-          console.log(response);
-          if(response == "Escape" || response == "q" ) {
+          if (response == "Escape" || response == "q") {
             saveLogLocal({ step: LogStepTypes.EndedPrel });
             this.$router.push("/notFound");
           }
         }
+
         switch (this.currentStep) {
           case StepTypes.Instructions: {
             this.currentStep = StepTypes.FixationRest;
             saveLogLocal({ step: LogStepTypes.Fixation });
-            timer(this.experimentTimes.initial * 1000) // TODO use data from BE
+            /* 1000 because the exp started faster than in python, 
+            because JS is asynchronous and this is a completely different algorithm.
+            This had to be applied on more places. */
+            timer(this.experimentTimes.initial * 1000) 
               .pipe(take(1))
               .subscribe(() => {
                 this.startExperiment();
@@ -111,7 +118,7 @@ export default defineComponent({
             let fixationTime =
               this.ItiTimesGenerator[this.stimulus.code].next().value;
             if (event instanceof KeyboardEvent) {
-              // if a key was pressed
+              /* checking if a key was pressed => key$ fired sooner than timesUp$ */
               reactionTime = elapsed(this.stimulusTime.exactTime);
               response = event.key;
               correct =
@@ -158,6 +165,12 @@ export default defineComponent({
     saveResponsesDB();
     this.onDestroy$.next();
     this.onExpFinish$.next();
+    this.onDestroy$.complete();
+    this.onExpFinish$.complete();
+    /* Observables need to be destroyed, as Promises, and this is a nice way to do it 
+    without the need to store the Observable (as we would do with Promises). 
+    https://www.digitalocean.com/community/tutorials/angular-takeuntil-rxjs-unsubscribe
+    */
   },
   methods: {
     getExperimentConfig() {
